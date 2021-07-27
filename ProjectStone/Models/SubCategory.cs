@@ -7,15 +7,11 @@ using System.Threading.Tasks;
 
 namespace ProjectStone.Models
 {
-  public class Category
+  public class SubCategory
   {
-      // Data annotations "[Key]" for table to identify primary key. To keep it explicit, use [Key].
       [Key]
       public int Id { get; set; }
 
       public string Name { get; set; }
-      // Using Data Annotations change text format.
-      [DisplayName("Display Order")]
-      public int DisplayOrder { get; set; }
   }
 }

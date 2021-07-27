@@ -1,7 +1,7 @@
 ﻿@* Get category list from model. *@
-@model IEnumerable<ProjectStone.Models.Category>
+@model IEnumerable<ProjectStone.Models.SubCategory>
 @{
-  ViewData["Title"] = "Categories";
+  ViewData["Title"] = "Sub-Categories";
 }
 
 <div class="container p-3">
@@ -11,8 +11,8 @@
     </div>
     <div class="col-6 text-right">
       @* Use tag helpers to redirect to the Create action *@
-      <a asp-controller="Category" asp-action="Create" class="btn btn-primary">
-        Create New Category
+      <a asp-controller="SubCategory" asp-action="Create" class="btn btn-primary">
+        Create New Sub-Category
       </a>
     </div>
   </div>
@@ -23,21 +23,19 @@
   {
     <table class="table table-bordered table-striped" style="width: 100%">
       <thead>
-        <tr>
-          <th>Category Name</th>
-          <th>Display Order</th>
-          <th></th>
-        </tr>
+      <tr>
+        <th>Category Name</th>
+        <th></th>
+      </tr>
       </thead>
       <tbody>
-        @foreach (var obj in Model)
-        {
-          <tr>
-            <td style="width: 50%">@obj.Name</td>
-            <td style="width: 30%">@obj.DisplayOrder</td>
-            <td></td>
-          </tr>
-        }
+      @foreach (var obj in Model)
+      {
+        <tr>
+          <td style="width: 50%">@obj.Name</td>
+          <td></td>
+        </tr>
+      }
       </tbody>
     </table>
   }
