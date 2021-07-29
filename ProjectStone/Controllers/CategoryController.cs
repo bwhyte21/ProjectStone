@@ -25,27 +25,31 @@ namespace ProjectStone.Controllers
 
             return View(categoryList);
         }
-        
+
         // GET - Create
         public IActionResult Create()
         {
             return View();
         }
-        
+
         // POST - Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category obj)
         {
-            // Pull object information from Create page.
-            _db.Category.Add(obj);
-            
-            // Add object to database using save changes.
-            _db.SaveChanges();
-            
-            // Redirect to index to display updated list.
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                // Pull object information from Create page.
+                _db.Category.Add(obj);
+
+                // Add object to database using save changes.
+                _db.SaveChanges();
+
+                // Redirect to index to display updated list.
+                return RedirectToAction("Index");
+            }
+
+            return View(obj);
         }
-    
     }
 }
