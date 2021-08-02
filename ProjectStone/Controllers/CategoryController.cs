@@ -37,6 +37,7 @@ namespace ProjectStone.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category obj)
         {
+            // Server-side validation.
             if (ModelState.IsValid)
             {
                 // Pull object information from Create page.
