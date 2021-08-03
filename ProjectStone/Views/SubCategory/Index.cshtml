@@ -7,24 +7,24 @@
 <div class="container p-3">
   <div class="row pt-2">
     <div class="col-6">
-      <h2 class="text-primary">Category List</h2>
+      <h2 class="text-primary">Sub-Category List</h2>
     </div>
     <div class="col-6 text-right">
       @* Use tag helpers to redirect to the Create action *@
-      <a asp-controller="SubCategory" asp-action="Create" class="btn btn-primary">
-        Create New Sub-Category
+      <a asp-controller="SubCategory" asp-action="Create" class="btn btn-info">
+          <i class="fas fa-plus"></i>&nbsp; Create New Sub-Category
       </a>
     </div>
   </div>
   
   <br />
   
-  @if (Model.Count() > 0)
+  @if (Model.Any())
   {
     <table class="table table-bordered table-striped" style="width: 100%">
       <thead>
       <tr>
-        <th>Category Name</th>
+        <th>Sub-Category Name</th>
         <th></th>
       </tr>
       </thead>
@@ -33,7 +33,17 @@
       {
         <tr>
           <td style="width: 50%">@obj.Name</td>
-          <td></td>
+          <td class="text-center">
+              <div class="w-100 btn-group" role="group">
+                  <a asp-controller="SubCategory" asp-route-Id="@obj.Id" asp-action="Edit" class="btn btn-success mx-2 ">
+                      <i class="far fa-edit"></i> Edit
+                  </a>
+                  @* Pass in model obj identifier of category to delete the desired item from the table via asp-route-[paramName] tag helper *@
+                  <a asp-controller="SubCategory" asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-danger mx-2">
+                      <i class="far fa-trash-alt"></i> Delete
+                  </a>
+              </div>
+          </td>
         </tr>
       }
       </tbody>

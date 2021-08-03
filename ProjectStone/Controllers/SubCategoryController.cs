@@ -38,5 +38,59 @@ namespace ProjectStone.Controllers
 
             return Redirect("Index");
         }
+
+        // GET - Edit
+        public IActionResult Edit(int? id)
+        {
+            if (id is null or 0) { return NotFound(); }
+
+            // Find only works on primary key.
+            var obj = _db.SubCategory.Find(id);
+            if (obj is null) { return NotFound(); }
+
+            return View(obj);
+        }
+
+        // POST - Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(SubCategory obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.SubCategory.Update(obj);
+                _db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+
+            return View(obj);
+        }
+
+        // GET - Delete
+        public IActionResult Delete(int? id)
+        {
+            if (id is null or 0) { return NotFound(); }
+
+            var obj = _db.SubCategory.Find(id);
+            if (obj == null) { return NotFound(); }
+
+            return View(obj);
+        }
+
+        // POST - Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(int? id)
+        {
+            var obj = _db.SubCategory.Find(id);
+            
+            if (obj is null) { NotFound(); }
+
+            _db.SubCategory.Remove(obj);
+            _db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
     }
 }
