@@ -56,11 +56,11 @@ namespace ProjectStone.Controllers
         // GET - Edit
         public IActionResult Edit(int? id)
         {
-            if (id == null || id == 0) { return NotFound(); }
+            if (id is null or 0) { return NotFound(); }
 
             // Find only works on primary key.
             var obj = _db.Category.Find(id);
-            if (obj == null) { return NotFound(); }
+            if (obj is null) { return NotFound(); }
 
             return View(obj);
         }
@@ -84,7 +84,7 @@ namespace ProjectStone.Controllers
         // GET - Delete
         public IActionResult Delete(int? id)
         {
-            if (id == null || id == 0) { return NotFound(); }
+            if (id is null or 0) { return NotFound(); }
 
             var obj = _db.Category.Find(id);
             if (obj == null) { return NotFound(); }
@@ -98,7 +98,8 @@ namespace ProjectStone.Controllers
         public IActionResult DeletePost(int? id)
         {
             var obj = _db.Category.Find(id);
-            if (obj == null) { NotFound(); }
+            
+            if (obj is null) { NotFound(); }
 
             _db.Category.Remove(obj);
             _db.SaveChanges();
