@@ -1,6 +1,8 @@
 ﻿@model ProjectStone.Models.Category
 
 <form method="post" asp-action="Edit">
+    @* Grab the Id when we post it *@
+    <input asp-for="Id" hidden />
     <div class="border p-3">
         <div class="form-group row">
             <h2 class="text-info pl-3">Edit Category</h2>

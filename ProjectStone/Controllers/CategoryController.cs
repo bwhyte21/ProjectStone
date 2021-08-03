@@ -70,5 +70,26 @@ namespace ProjectStone.Controllers
             
             return View(obj);
         }
+
+        // POST - Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Category obj)
+        {
+            // Server-side validation.
+            if (ModelState.IsValid)
+            {
+                // Pull object information from table to update.
+                _db.Category.Update(obj);
+
+                // Add object to database using save changes.
+                _db.SaveChanges();
+
+                // Redirect to index to display updated list.
+                return RedirectToAction("Index");
+            }
+
+            return View(obj);
+        }
     }
 }
