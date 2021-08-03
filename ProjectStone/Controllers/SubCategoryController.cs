@@ -33,10 +33,14 @@ namespace ProjectStone.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(SubCategory obj)
         {
-            _db.SubCategory.Add(obj);
-            _db.SaveChanges();
+            if (ModelState.IsValid)
+            {
+                _db.SubCategory.Add(obj);
+                _db.SaveChanges();
+                return Redirect("Index");
+            }
 
-            return Redirect("Index");
+            return View(obj);
         }
 
         // GET - Edit
