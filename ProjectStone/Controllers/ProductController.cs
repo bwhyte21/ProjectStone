@@ -26,14 +26,24 @@ namespace ProjectStone.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> productList = _db.Product;
+            #region before eager loading
+            //IEnumerable<Product> productList = _db.Product;
 
             // To access Category, we need to load it in.
-            foreach (var obj in productList)
-            {
+            //foreach (var obj in productList)
+            //{
                 // Foreach object in the product list, it will load the category model based on this condition (below)
-                obj.Category = _db.Category.FirstOrDefault(u => u.Id == obj.CategoryId);
-            }
+                //obj.Category = _db.Category.FirstOrDefault(u => u.Id == obj.CategoryId);
+                //obj.SubCategory = _db.SubCategory.FirstOrDefault(u => u.Id == obj.SubCategoryTypeId);
+            //}
+            #endregion
+         
+            #region using eagar loading
+            
+            // Replacing commented code block in region with this method of eagar loading.
+            IEnumerable<Product> productList = _db.Product.Include(u => u.Category).Include(u => u.SubCategory);
+            
+            #endregion
 
             return View(productList);
         }
@@ -41,23 +51,15 @@ namespace ProjectStone.Controllers
         // GET - Upsert (Null for Create, int val for Edit)
         public IActionResult Upsert(int? id)
         {
-            // Using a ViewBag to pass data from controller to view.
-            //IEnumerable<SelectListItem> CategoryDropDown = _db.Category.Select(i => new SelectListItem
-            //{
-            //    Text = i.Name,
-            //    Value = i.Id.ToString()
-            //});
-
-            // Assign value to ViewBag (temp data)
-            //ViewBag.CategoryDropDown = CategoryDropDown;
-            //ViewData["CategoryDropDown"] = CategoryDropDown;
-
-            //var product = new Product();
-
             var productViewModel = new ProductViewModel
             {
                 Product = new Product(),
                 CategorySelectList = _db.Category.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                }),
+                SubCategorySelectList = _db.SubCategory.Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Id.ToString()
@@ -69,15 +71,13 @@ namespace ProjectStone.Controllers
                 // To create a product.
                 return View(productViewModel);
             }
-            else
-            {
-                // To edit a product.
-                productViewModel.Product = _db.Product.Find(id);
 
-                if (productViewModel.Product is null) { return NotFound(); }
+            // To edit a product.
+            productViewModel.Product = _db.Product.Find(id);
 
-                return View(productViewModel);
-            }
+            if (productViewModel.Product is null) { return NotFound(); }
+
+            return View(productViewModel);
         }
 
         // POST - Create
@@ -150,6 +150,12 @@ namespace ProjectStone.Controllers
                 Text = i.Name,
                 Value = i.Id.ToString()
             });
+            
+            productViewModel.SubCategorySelectList = _db.SubCategory.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
 
             return View(productViewModel);
         }
@@ -160,10 +166,7 @@ namespace ProjectStone.Controllers
             if (id is null or 0) { return NotFound(); }
 
             // "Include" category dropdown value when looking for product. (Eager loading)
-            var productFromDb = _db.Product.Include(u => u.Category).FirstOrDefault(u => u.Id == id);
-
-            // Load category dropdown.
-            //productFromDb.Category = _db.Category.Find(productFromDb.CategoryId);
+            var productFromDb = _db.Product.Include(u => u.Category).Include(u => u.SubCategory).FirstOrDefault(u => u.Id == id);
 
             if (productFromDb is null) { return NotFound(); }
 

@@ -25,6 +25,8 @@
             <tr>
                 <th>Product Name</th>
                 <th>Price</th>
+                <th>Category</th>
+                <th>SubCategory</th>
                 <th></th>
             </tr>
             </thead>
@@ -33,7 +35,9 @@
             {
                 <tr>
                     <td style="width: 50%">@obj.Name</td>
-                    <td style="width: 25%">@obj.Price</td>
+                    <td style="width: 10%">@obj.Price</td>
+                    <td style="width: 15%">@obj.Category.Name</td>
+                    <td style="width: 10%">@obj.SubCategory.Name</td>
                     <td class="text-center">
                         <div class="w-100 btn-group" role="group">
                             @* Upsert = responsible for creating a product and updating a product *@

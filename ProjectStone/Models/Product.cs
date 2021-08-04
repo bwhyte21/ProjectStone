@@ -14,6 +14,8 @@ namespace ProjectStone.Models
         
         [Required] // <-- Necessary for EF Core to alter the DB. Makes column in EF Not Nullable.
         public string Name { get; set; }
+
+        public string ShortDesc { get; set; }
         
         public string Description { get; set; }
         
@@ -25,8 +27,15 @@ namespace ProjectStone.Models
         // Make EF aware of this foreign key. (Don't forget to add this to the DBContext to make the migration aware)
         [Display(Name = "Category Type")]
         public int CategoryId { get; set; }
+
         // By doing this.
         [ForeignKey("CategoryId")]
         public virtual Category Category { get; set; }
+
+        [Display(Name = "SubCategory Type")]
+        public int SubCategoryTypeId { get; set; }
+        
+        [ForeignKey("SubCategoryTypeId")]
+        public virtual SubCategory SubCategory { get; set; }
     }
 }
