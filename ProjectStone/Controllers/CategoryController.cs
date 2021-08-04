@@ -87,7 +87,7 @@ namespace ProjectStone.Controllers
             if (id is null or 0) { return NotFound(); }
 
             var obj = _db.Category.Find(id);
-            if (obj == null) { return NotFound(); }
+            if (obj is null) { return NotFound(); }
 
             return View(obj);
         }
