@@ -25,10 +25,22 @@ namespace ProjectStone
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region DBContext Service
             // Adding a DbContext Service.
             // This uses the connection string that was created in appsettings.json file.
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            #endregion
+            #region Session Service
+            // Add Sessions to this .Net Core project.
+            services.AddHttpContextAccessor();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            #endregion
+            
             services.AddControllersWithViews();
         }
 
@@ -51,6 +63,13 @@ namespace ProjectStone
             app.UseRouting();
 
             app.UseAuthorization();
+
+            #region Session Pipeline Cofig
+            
+            // Extra Session service extensions are to be located in a "Utility" folder.
+            app.UseSession();
+            
+            #endregion
 
             app.UseEndpoints(endpoints => { endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}"); });
         }
