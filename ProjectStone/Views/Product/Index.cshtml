@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ProjectStone.Models.Product>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="container p-3">
+    <div class="row pt-2">
+        <div class="col-6">
+            <h2 class="text-primary">Product List</h2>
+        </div>
+        <div class="col-6 text-right">
+            @* Use tag helpers to redirect to the Create action *@
+            <a asp-action="Upsert" class="btn btn-info">
+                <i class="fas fa-plus"></i>&nbsp; Create New Product
+            </a>
+        </div>
+    </div>
+
+    <br/>
+
+    @if (Model.Any())
+    {
+        <table class="table table-bordered table-striped" style="width: 100%">
+            <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>SubCategory</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var obj in Model)
+            {
+                <tr>
+                    <td style="width: 50%">@obj.Name</td>
+                    <td style="width: 10%">@obj.Price</td>
+                    <td style="width: 15%">@obj.Category.Name</td>
+                    <td style="width: 10%">@obj.SubCategory.Name</td>
+                    <td class="text-center">
+                        <div class="w-100 btn-group" role="group">
+                            @* Upsert = responsible for creating a product and updating a product *@
+                            <a  asp-route-Id="@obj.Id" asp-action="Upsert" class="btn btn-success mx-2 ">
+                                <i class="far fa-edit"></i>
+                            </a>
+                            @* Pass in model obj identifier of category to delete the desired item from the table via asp-route-[paramName] tag helper *@
+                            <a  asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-danger mx-2">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No products available.</p>
+    }
+
+</div>
