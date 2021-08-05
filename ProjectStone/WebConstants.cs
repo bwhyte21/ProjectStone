@@ -11,5 +11,9 @@ namespace ProjectStone
       public static string ImagePath = @"\imgs\product\";
       // Access App Session.
       public static string SessionCart = "ShoppingCartSession";
+      // User Roles.
+      public static string AdminRole = "Admin";
+      public static string CustomerRole = "Customer";
+
   }
 }
