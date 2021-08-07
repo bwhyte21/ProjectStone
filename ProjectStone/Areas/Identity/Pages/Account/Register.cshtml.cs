@@ -116,7 +116,16 @@ namespace ProjectStone.Areas.Identity.Pages.Account
                     if (_userManager.Options.SignIn.RequireConfirmedAccount) { return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl }); }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        // This signs in user after [admin]account creation. We don't want this.
+                        // If the new user is not in an admin role, then sign them in.
+                        if (!User.IsInRole(WebConstants.AdminRole))
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index");
+                        }
 
                         return LocalRedirect(returnUrl);
                     }

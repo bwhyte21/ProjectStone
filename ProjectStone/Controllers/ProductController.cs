@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using ProjectStone.Models.ViewModels;
 
 namespace ProjectStone.Controllers
 {
+    [Authorize(Roles = WebConstants.AdminRole)]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _db;

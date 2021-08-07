@@ -9,8 +9,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using ProjectStone.Data;
+using ProjectStone.Utility;
 
 namespace ProjectStone
 {
@@ -35,14 +37,22 @@ namespace ProjectStone
             #endregion
 
             #region Identity Services
+
             // Add Identity service. Install NuGet pkg Microsoft.AspNetCore.Identity.UI
             // .AddEntityFrameworkStores creates the identity tables in our DB for us.
             // Add identityRole to config Role Manager while using "AddIdentity".
             //services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>(); // We use the one below since we've added roles.
-            
+
             // .AddDefaultTokenProviders for when "Forgot Password" is invoked. [Needed along with Identity Role]
             // .AddDefaultUI is for Identity pages and more. [Needed along with Identity Role]
-            services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<ApplicationDbContext>();
+
+            #endregion
+
+            #region Email Services
+
+            // Email service registration.
+            services.AddTransient<IEmailSender, EmailSender>();
 
             #endregion
 
@@ -81,14 +91,14 @@ namespace ProjectStone
             app.UseRouting();
 
             #region Identity Pipeline Config
-            
+
             // Now that we're using Identity, we must add UseAuthentication BEFORE UseAuthorization.
             // Note: After migrating Identity into the DB, right-click the Project, go to "Add", click "Add New Scaffolded Item", then select Identity to choose
             // then add in the desired Identity Pages (Logins, ForgotPassword, etc)
             app.UseAuthentication();
-            
+
             #endregion
-            
+
             app.UseAuthorization();
 
             #region Session Pipeline Cofig

@@ -3,11 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using ProjectStone.Data;
 using ProjectStone.Models;
 
 namespace ProjectStone.Controllers
 {
+    [Authorize(Roles = WebConstants.AdminRole)]
     public class CategoryController : Controller
     {
         // Use dependency injection to grab an instance for the data to set in the CTOR.
