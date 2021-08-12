@@ -84,9 +84,10 @@ namespace ProjectStone.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                // Scaffolded ver.
+                // Original version after scaffolding.
                 //var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
                 // My ver.
+                // New custom version.
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber, FullName = Input.FullName };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

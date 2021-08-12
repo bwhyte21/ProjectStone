@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - ProjectStone</title>
+    <title>@ViewData["Title"] - Stone Pavers</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css"/>
     <link rel="stylesheet" href="~/fontawesome/css/all.min.css"/>
@@ -19,7 +19,7 @@
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
         <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ProjectStone</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Stone Pavers</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -28,24 +28,30 @@
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                            <i class="fas fa-home"></i>
+                            @*<i class="fas fa-home"></i>*@
+                            Home
                         </a>
                     </li>
                     @if (User.IsInRole(WebConstants.AdminRole))
                     {
                         <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Content Management
-                        </a>
-                        <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                            <a class="nav-link" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
-                            <a class="nav-link" asp-area="" asp-controller="SubCategory" asp-action="Index">Sub-Category</a>
-                            <a class="nav-link" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Create Admin User</a>
-                        </div>
-                    </li>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Content Management
+                            </a>
+                            <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                                <a class="nav-link" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
+                                <a class="nav-link" asp-area="" asp-controller="SubCategory" asp-action="Index">Sub-Category</a>
+                                <a class="nav-link" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Create Admin User</a>
+                            </div>
+                        </li>
                     }
+                </ul>
+                @* Login Partial *@
+                <partial name="_LoginPartial"/>
+                @* Cart *@
+                <ul class="navbar-nav">
                     <li>
                         @if (_httpContextAccessor.HttpContext?.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart) != null)
                         {
@@ -64,8 +70,6 @@
                         }
                     </li>
                 </ul>
-                @* Login Partial *@
-                <partial name="_LoginPartial"/>
             </div>
         </div>
     </nav>
@@ -77,9 +81,9 @@
 </div>
 
 <footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; @DateTime.Now.Year - ProjectStone @*- <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>*@
-    </div>
+  <div class="container">
+    &copy; @DateTime.Now.Year - Stone Pavers @*- <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>*@
+  </div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
