@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
-namespace ProjectStone.Utility
+namespace ProjectStone_Utility
 {
     public class EmailSender : IEmailSender // Use this paired with MailJet
     {

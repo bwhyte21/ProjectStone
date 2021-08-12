@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProjectStone.Utility
+namespace ProjectStone_Utility
 {
   public class MailJetSettings
   {

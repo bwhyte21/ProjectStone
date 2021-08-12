@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectStone.Data;
 using ProjectStone.Models.ViewModels;
-using ProjectStone.Utility;
+using ProjectStone_Utility;
 
 namespace ProjectStone.Controllers
 {

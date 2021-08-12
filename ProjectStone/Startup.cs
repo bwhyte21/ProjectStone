@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using ProjectStone.Data;
-using ProjectStone.Utility;
+using ProjectStone_Utility;
 
 namespace ProjectStone
 {

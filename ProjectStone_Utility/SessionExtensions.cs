@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace ProjectStone.Utility
+namespace ProjectStone_Utility
 {
     // This class MUST be static.
   public static class SessionExtensions

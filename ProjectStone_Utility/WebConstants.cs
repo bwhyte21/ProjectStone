@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProjectStone
+namespace ProjectStone_Utility
 {
+    /// <summary>
+    /// Moved into ProjectStone_Utility from Project Stone after library creation.
+    /// Add the reference of this Utility project into the Main project (Project Stone)
+    /// </summary>
     public class WebConstants
     {
         // Access ImagePath.

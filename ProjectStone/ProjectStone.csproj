@@ -23,4 +23,8 @@
     <Folder Include="wwwroot\templates\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectStone_Utility\ProjectStone_Utility.csproj" />
+  </ItemGroup>
+
 </Project>
