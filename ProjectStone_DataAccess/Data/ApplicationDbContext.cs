@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProjectStone_Models;
 
-namespace ProjectStone.Data
+namespace ProjectStone_DataAccess.Data
 {
     public class ApplicationDbContext : IdentityDbContext // Requires Microsoft.AspNetCore.Identity.EntityFrameworkCore for IdentityDbContext.
     {

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ProjectStone.Data;
+using ProjectStone_DataAccess.Data;
 using ProjectStone_Models;
 using ProjectStone_Models.ViewModels;
 using ProjectStone_Utility;

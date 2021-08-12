@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProjectStone.Data;
+using ProjectStone_DataAccess.Data;
 
-namespace ProjectStone.Migrations
+namespace ProjectStone_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20210804052637_AddFkToProduct_Rename")]

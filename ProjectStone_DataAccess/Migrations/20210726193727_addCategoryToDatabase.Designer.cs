@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProjectStone.Data;
+using ProjectStone_DataAccess.Data;
 
-namespace ProjectStone.Migrations
+namespace ProjectStone_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210727002156_addSubCategoryToDatabase")]
-    partial class addSubCategoryToDatabase
+    [Migration("20210726193727_addCategoryToDatabase")]
+    partial class addCategoryToDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

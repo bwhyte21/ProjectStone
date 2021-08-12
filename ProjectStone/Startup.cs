@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using ProjectStone.Data;
+using ProjectStone_DataAccess.Data;
 using ProjectStone_Utility;
 
 namespace ProjectStone

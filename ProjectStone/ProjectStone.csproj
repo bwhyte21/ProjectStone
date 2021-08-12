@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ProjectStone_DataAccess\ProjectStone_DataAccess.csproj" />
     <ProjectReference Include="..\ProjectStone_Models\ProjectStone_Models.csproj" />
     <ProjectReference Include="..\ProjectStone_Utility\ProjectStone_Utility.csproj" />
   </ItemGroup>

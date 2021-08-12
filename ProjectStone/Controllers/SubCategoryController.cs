@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using ProjectStone.Data;
+using ProjectStone_DataAccess.Data;
 using ProjectStone_Models;
 using ProjectStone_Utility;
 
