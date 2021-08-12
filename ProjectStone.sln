@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectStone", "ProjectSton
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectStone_Utility", "ProjectStone_Utility\ProjectStone_Utility.csproj", "{69229B0D-DC57-461B-BA10-281C3F46FF19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectStone_Models", "ProjectStone_Models\ProjectStone_Models.csproj", "{1A0148DB-EEBB-4934-82B3-1998BCE72992}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{69229B0D-DC57-461B-BA10-281C3F46FF19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69229B0D-DC57-461B-BA10-281C3F46FF19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69229B0D-DC57-461B-BA10-281C3F46FF19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A0148DB-EEBB-4934-82B3-1998BCE72992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A0148DB-EEBB-4934-82B3-1998BCE72992}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A0148DB-EEBB-4934-82B3-1998BCE72992}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A0148DB-EEBB-4934-82B3-1998BCE72992}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

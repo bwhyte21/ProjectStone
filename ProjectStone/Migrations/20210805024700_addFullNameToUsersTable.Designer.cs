@@ -227,7 +227,7 @@ namespace ProjectStone.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ProjectStone.Models.Category", b =>
+            modelBuilder.Entity("ProjectStone_Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -246,7 +246,7 @@ namespace ProjectStone.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("ProjectStone.Models.Product", b =>
+            modelBuilder.Entity("ProjectStone_Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -284,7 +284,7 @@ namespace ProjectStone.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("ProjectStone.Models.SubCategory", b =>
+            modelBuilder.Entity("ProjectStone_Models.SubCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -300,7 +300,7 @@ namespace ProjectStone.Migrations
                     b.ToTable("SubCategory");
                 });
 
-            modelBuilder.Entity("ProjectStone.Models.ApplicationUser", b =>
+            modelBuilder.Entity("ProjectStone_Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -361,15 +361,15 @@ namespace ProjectStone.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectStone.Models.Product", b =>
+            modelBuilder.Entity("ProjectStone_Models.Product", b =>
                 {
-                    b.HasOne("ProjectStone.Models.Category", "Category")
+                    b.HasOne("ProjectStone_Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectStone.Models.SubCategory", "SubCategory")
+                    b.HasOne("ProjectStone_Models.SubCategory", "SubCategory")
                         .WithMany()
                         .HasForeignKey("SubCategoryTypeId")
                         .OnDelete(DeleteBehavior.Cascade)

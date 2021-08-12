@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace ProjectStone.Models.ViewModels
+namespace ProjectStone_Models.ViewModels
 {
   public class ProductViewModel
   {

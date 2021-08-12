@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProjectStone.Models.ViewModels
+namespace ProjectStone_Models.ViewModels
 {
   public class ProductUserViewModel
   {

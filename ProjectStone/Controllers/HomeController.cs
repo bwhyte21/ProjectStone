@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ProjectStone.Models;
+using ProjectStone_Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectStone.Data;
-using ProjectStone.Models.ViewModels;
+using ProjectStone_Models.ViewModels;
 using ProjectStone_Utility;
 
 namespace ProjectStone.Controllers

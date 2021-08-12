@@ -20,7 +20,7 @@ namespace ProjectStone.Migrations
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ProjectStone.Models.Category", b =>
+            modelBuilder.Entity("ProjectStone_Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,7 +38,7 @@ namespace ProjectStone.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("ProjectStone.Models.SubCategory", b =>
+            modelBuilder.Entity("ProjectStone_Models.SubCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

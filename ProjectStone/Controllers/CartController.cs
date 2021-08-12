@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using ProjectStone.Data;
-using ProjectStone.Models;
-using ProjectStone.Models.ViewModels;
+using ProjectStone_Models;
+using ProjectStone_Models.ViewModels;
 using ProjectStone_Utility;
 
 namespace ProjectStone.Controllers

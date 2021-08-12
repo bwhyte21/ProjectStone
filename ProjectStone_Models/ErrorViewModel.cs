@@ -1,6 +1,6 @@
 using System;
 
-namespace ProjectStone.Models
+namespace ProjectStone_Models
 {
   public class ErrorViewModel
   {
