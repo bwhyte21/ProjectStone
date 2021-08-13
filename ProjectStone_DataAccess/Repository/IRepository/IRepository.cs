@@ -29,7 +29,7 @@ namespace ProjectStone_DataAccess.Repository.IRepository
         /// <param name="includeProperties">Null by default if there are no Properties included(i.e; _db.Product.Include(u=>u.Category))</param>
         /// <param name="isTracking">By default, all queries run using EF are being tracked. Set to false if you do not wish to track.</param>
         /// <returns>A list of generic objects, T.</returns>
-        IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedEnumerable<T>> orderBy = null, string includeProperties = null, bool isTracking = true);
+        IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null, bool isTracking = true);
 
         /// <summary>
         /// Does not need an OrderBy because we're only looking for one record. The first or defaulted target.
