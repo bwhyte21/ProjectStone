@@ -30,11 +30,6 @@ namespace ProjectStone_DataAccess.Repository
             dbSet = _db.Set<T>();
         }
 
-        public void Add(T entity)
-        {
-            // dbSet will have all the methods in, for example, ProductController when we bring up the intellisense in "Product."
-            dbSet.Add(entity);
-        }
 
         public T Find(int id)
         {
@@ -119,6 +114,12 @@ namespace ProjectStone_DataAccess.Repository
 
             // Since we only want one object, we will call FirstOrDefault()
             return query.FirstOrDefault();
+        }
+
+        public void Add(T entity)
+        {
+            // dbSet will have all the methods in, for example, ProductController when we bring up the intellisense in "Product."
+            dbSet.Add(entity);
         }
 
         public void Remove(T entity)
