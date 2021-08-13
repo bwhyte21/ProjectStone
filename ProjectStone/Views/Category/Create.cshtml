@@ -2,14 +2,14 @@
 
 @* When this post executes a POST method, it will look for Create; asp-action *@
 <form method="post" asp-action="Create">
-  <div class="border p-3">
+  <div class="border p-3 bg-white">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group row">
-      <h2 class="text-info pl-3">Add Category</h2>
+      <h2 class="text-info ps-3">Add Category</h2>
     </div>
     <div class="row">
       <div class="col-8">
-        <div class="form-group row">
+        <div class="form-group row py-2">
           <div class="col-4">
             <label asp-for="Name"></label>
           </div>
@@ -19,7 +19,7 @@
           </div>
 
         </div>
-        <div class="form-group row">
+        <div class="form-group row py-2">
           <div class="col-4">
             <label asp-for="DisplayOrder"></label>
           </div>
@@ -29,7 +29,7 @@
           </div>
 
         </div>
-        <div class="form-group row">
+        <div class="form-group row py-2">
           <div class="col-8 offset-4 row">
 
             <div class="col">
