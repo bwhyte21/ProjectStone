@@ -103,7 +103,7 @@ namespace ProjectStone.Controllers
 
             // New w/ CategoryRepo
             var categoryObj = _categoryRepo.Find(id.GetValueOrDefault()); // Since the new Find() does not accept int?, we will use GetValueOrDefault()
-            if (categoryObj is null) { return NotFound(); }
+            if (categoryObj == null) { return NotFound(); }
 
             return View(categoryObj);
         }
@@ -141,7 +141,7 @@ namespace ProjectStone.Controllers
             //return View(obj);
 
             var categoryObj = _categoryRepo.Find(id.GetValueOrDefault());
-            if (categoryObj is null) { return NotFound(); }
+            if (categoryObj == null) { return NotFound(); }
 
             return View(categoryObj);
         }
@@ -162,7 +162,7 @@ namespace ProjectStone.Controllers
             // New
             var categoryObj = _categoryRepo.Find(id.GetValueOrDefault());
 
-            if (categoryObj is null) { NotFound(); }
+            if (categoryObj == null) { NotFound(); }
 
             _categoryRepo.Remove(categoryObj);
             _categoryRepo.Save();

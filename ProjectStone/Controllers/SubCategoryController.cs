@@ -54,7 +54,7 @@ namespace ProjectStone.Controllers
 
             // Find only works on primary key.
             var subCategoryObj = _subCategoryRepo.Find(id.GetValueOrDefault());
-            if (subCategoryObj is null) { return NotFound(); }
+            if (subCategoryObj == null) { return NotFound(); }
 
             return View(subCategoryObj);
         }
@@ -81,7 +81,7 @@ namespace ProjectStone.Controllers
             if (id is null or 0) { return NotFound(); }
 
             var subCategoryObj = _subCategoryRepo.Find(id.GetValueOrDefault());
-            if (subCategoryObj is null) { return NotFound(); }
+            if (subCategoryObj == null) { return NotFound(); }
 
             return View(subCategoryObj);
         }
@@ -93,7 +93,7 @@ namespace ProjectStone.Controllers
         {
             var subCategoryObj = _subCategoryRepo.Find(id.GetValueOrDefault());
             
-            if (subCategoryObj is null) { NotFound(); }
+            if (subCategoryObj == null) { NotFound(); }
 
             _subCategoryRepo.Remove(subCategoryObj);
             _subCategoryRepo.Save();

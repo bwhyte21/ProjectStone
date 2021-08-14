@@ -52,7 +52,7 @@ namespace ProjectStone.Controllers
             #region using eagar loading with new Repository Pattern
             // Use the GetAll(...) params to invoke the .Include part of it.
             // Literally _db.Product.Include(u => u.Category).Include(u => u.SubCategory) vs _productRepo.GetAll(includeProperties:"Category,SubCategory")
-            var productList = _productRepo.GetAll(includeProperties:"Category,SubCategory");
+            var productList = _productRepo.GetAll(includeProperties:"Category,SubCategory"); // No spaces in the "includeProperties:" string, everything will break.
             #endregion
 
             return View(productList);
@@ -86,7 +86,7 @@ namespace ProjectStone.Controllers
                 SubCategorySelectList = _productRepo.GetAllDropdownList(WebConstants.SubCategoryName)
             };
 
-            if (id is null)
+            if (id == null)
             {
                 // To create a product.
                 return View(productViewModel);
@@ -95,7 +95,7 @@ namespace ProjectStone.Controllers
             // To edit a product.
             productViewModel.Product = _productRepo.Find(id.GetValueOrDefault());
 
-            if (productViewModel.Product is null) { return NotFound(); }
+            if (productViewModel.Product == null) { return NotFound(); }
 
             return View(productViewModel);
         }
@@ -187,7 +187,7 @@ namespace ProjectStone.Controllers
             // New.
             var productFromDb = _productRepo.FirstOrDefault(u => u.Id == id, "Category,SubCategory"); // "includeProperties:" was marked as redundant, so we will remove it from this line.
 
-            if (productFromDb is null) { return NotFound(); }
+            if (productFromDb == null) { return NotFound(); }
 
             return View(productFromDb);
         }
@@ -202,7 +202,7 @@ namespace ProjectStone.Controllers
 
             var productObj = _productRepo.Find(id.GetValueOrDefault());
 
-            if (productObj is null) { NotFound(); }
+            if (productObj == null) { NotFound(); }
 
             var uploadPath = _webHostEnvironment.WebRootPath + WebConstants.ImagePath;
 

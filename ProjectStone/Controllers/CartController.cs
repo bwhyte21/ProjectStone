@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using ProjectStone_DataAccess.Data;
+using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Models;
 using ProjectStone_Models.ViewModels;
 using ProjectStone_Utility;
@@ -20,19 +21,26 @@ namespace ProjectStone.Controllers
     [Authorize] // Can be placed at Controller level (here) or individual access level (e.g.; Index)
     public class CartController : Controller
     {
-        private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailSender _emailSender;
+        private readonly IApplicationUserRepository _userRepo;
+        private readonly IProductRepository _productRepo;
+        private readonly IInquiryHeaderRepository _inqHeaderRepo;
+        private readonly IInquiryDetailRepository _inqDetailRepo;
         
         // Once it's bound in the post, it does not need to be explicitly defined in the action method's parameter. It will be available by default in the summary post.
         [BindProperty]
         public ProductUserViewModel ProductUserVm { get; set; }
 
-        public CartController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment, IEmailSender emailSender)
+        public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender, IApplicationUserRepository appUserRepo, IProductRepository productRepo, 
+            IInquiryHeaderRepository inqHeaderRepo, IInquiryDetailRepository inqDetailRepo)
         {
-            _db = db;
             _webHostEnvironment = webHostEnvironment;
             _emailSender = emailSender;
+            _userRepo = appUserRepo;
+            _productRepo = productRepo;
+            _inqHeaderRepo = inqHeaderRepo;
+            _inqDetailRepo = inqDetailRepo;
         }
 
         public IActionResult Index()
@@ -40,7 +48,7 @@ namespace ProjectStone.Controllers
             var shoppingCartList = new List<ShoppingCart>();
 
             // Check for session.
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null 
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) != null 
                 && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 // Session exists. Set the shopping cart list to the existing one in the session.
@@ -51,8 +59,8 @@ namespace ProjectStone.Controllers
             var prodInCart = shoppingCartList.Select(i => i.ProductId).ToList();
             
             // This acts as in IN clause in SQL. 
-            // Retrieve all products WHERE Id mataches any Id inside the ProdInCart list.
-            var prodList = _db.Product.Where(u => prodInCart.Contains(u.Id));
+            // Retrieve all products WHERE Id matches any Id inside the ProdInCart list.
+            var prodList = _productRepo.GetAll(u => prodInCart.Contains(u.Id));
 
             return View(prodList);
         }
@@ -70,27 +78,26 @@ namespace ProjectStone.Controllers
         public IActionResult Summary()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier); // Gets populated if user has logged in.
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier); // Gets populated if user has logged in.
             //var userId = User.FindFirstValue(ClaimTypes.Name); // Retrieves user's Id
 
             // Get session, load list from session.
             var shoppingCartList = new List<ShoppingCart>();
 
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null 
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) != null 
                 && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
             }
 
             var prodInCart = shoppingCartList.Select(i => i.ProductId).ToList();
-            var prodList = _db.Product.Where(u => prodInCart.Contains(u.Id));
-
+            var prodList = _productRepo.GetAll(u => prodInCart.Contains(u.Id));
 
             // Retrieve the user details based on the user's ID.
             ProductUserVm = new ProductUserViewModel
             {
                 // claim.Value should have the Id of the logged in user.
-                ApplicationUser = _db.ApplicationUser.FirstOrDefault(u => u.Id == claim.Value),
+                ApplicationUser = _userRepo.FirstOrDefault(u => u.Id == claim.Value),
                 ProductList = prodList.ToList()
             };
 
@@ -102,6 +109,10 @@ namespace ProjectStone.Controllers
         [ActionName("Summary")]
         public async Task<IActionResult> SummaryPost(ProductUserViewModel productUserViewModel)
         {
+            // Capture App User Id.
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.Name);
+
             // Send an email after inquiry submission, then show confirmation page.
             var templatePath = _webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar + "templates" + Path.DirectorySeparatorChar + "Inquiry.html";
 
@@ -127,6 +138,38 @@ namespace ProjectStone.Controllers
             // Send inquiry email to admin.
             await _emailSender.SendEmailAsync(WebConstants.AdminEmail, emailSubject, messageBody);
 
+            // Add Inquiry Header and Detail to DB.
+            var inquiryHeader = new InquiryHeader
+            {
+                ApplicationUserId = claim.Value,
+                FullName = productUserViewModel.ApplicationUser.FullName,
+                Email = productUserViewModel.ApplicationUser.Email,
+                PhoneNumber = productUserViewModel.ApplicationUser.PhoneNumber,
+                InquiryDate = DateTime.Now
+            };
+
+            // Get Id of header to populate in detail. Add record to db.
+            _inqHeaderRepo.Add(inquiryHeader);
+            // Save to DB.
+            _inqHeaderRepo.Save();
+
+            // Create records per item in cart.
+            foreach (var product in productUserViewModel.ProductList)
+            {
+                // For each product, there is to be an inquiry detail.
+                var inquiryDetail = new InquiryDetail
+                {
+                    InquiryHeaderId = inquiryHeader.Id,
+                    ProductId = product.Id
+                };
+
+                // Add detail to DB.
+                _inqDetailRepo.Add(inquiryDetail);
+            }
+            // Save to DB.
+            _inqDetailRepo.Save();
+
+
             return RedirectToAction(nameof(InquiryConfirmation));
         }
 
@@ -143,7 +186,7 @@ namespace ProjectStone.Controllers
             var shoppingCartList = new List<ShoppingCart>();
 
             // Check for session.
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null 
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) != null 
                 && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 // Session exists. Set the shopping cart list to the existing one in the session.

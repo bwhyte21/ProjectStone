@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectStone_DataAccess.Data;
+using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Models.ViewModels;
 using ProjectStone_Utility;
 
@@ -16,20 +17,22 @@ namespace ProjectStone.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _db;
+        private readonly IProductRepository _productRepo;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
+        public HomeController(ILogger<HomeController> logger, IProductRepository productRepo, ICategoryRepository categoryRepo)
         {
             _logger = logger;
-            _db = db;
+            _productRepo = productRepo;
+            _categoryRepo = categoryRepo;
         }
 
         public IActionResult Index()
         {
             var homeViewModel = new HomeViewModel
             {
-                Products = _db.Product.Include(u => u.Category).Include(u => u.SubCategory),
-                Categories = _db.Category
+                Products = _productRepo.GetAll(includeProperties:"Category,SubCategory"),
+                Categories = _categoryRepo.GetAll()
             };
 
             return View(homeViewModel);
@@ -39,14 +42,14 @@ namespace ProjectStone.Controllers
         {
             // Retrieve session
             var shoppingCartList = new List<ShoppingCart>();
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) != null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
             }
 
             var detailsViewModel = new DetailsViewModel
             {
-                Product = _db.Product.Include(u => u.Category).Include(u => u.SubCategory).FirstOrDefault(u => u.Id == id),
+                Product = _productRepo.FirstOrDefault(u => u.Id == id, "Category,SubCategory"),
                 IsInCart = false
             };
 
@@ -66,7 +69,7 @@ namespace ProjectStone.Controllers
 
             // If it has no values in it, add to cart.
             // If it has values, retrieve it, append product to cart.
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) != null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
             }
@@ -84,7 +87,7 @@ namespace ProjectStone.Controllers
         public IActionResult RemoveFromCart(int id)
         {
             var shoppingCartList = new List<ShoppingCart>();
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) != null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
             }
@@ -92,7 +95,7 @@ namespace ProjectStone.Controllers
             // Using LINQ, get the item to remove.
             var itemToRemove = shoppingCartList.SingleOrDefault(r => r.ProductId == id);
 
-            if (itemToRemove is not null)
+            if (itemToRemove != null)
             {
                 shoppingCartList.Remove(itemToRemove);
             }
