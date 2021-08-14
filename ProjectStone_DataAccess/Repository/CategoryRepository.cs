@@ -23,10 +23,13 @@ namespace ProjectStone_DataAccess.Repository
         {
             // The original way, we can do this because we're in the Category Repo.
             //var objFromDb = _db.Category.FirstOrDefault(u => u.Id == categoryObj.Id);
+            
             // BUT, since we have FirstOrDefault in our Repo already, we can use base.FirstOrDefault.
             //var objFromDb = base.FirstOrDefault(u => u.Id == categoryObj.Id);
+            
             // ReSharper claims we do not need to call the qualifier "base" as it is a redundant call, so we will go with that.
             var objFromDb = FirstOrDefault(u => u.Id == categoryObj.Id);
+            
             if (objFromDb != null)
             {
                 objFromDb.Name = categoryObj.Name;

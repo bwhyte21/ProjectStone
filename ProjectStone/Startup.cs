@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using ProjectStone_DataAccess.Data;
+using ProjectStone_DataAccess.Repository;
+using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Utility;
 
 namespace ProjectStone
@@ -31,7 +33,7 @@ namespace ProjectStone
             #region DBContext Services
 
             // Adding a DbContext Service.
-            // This uses the connection string that was created in appsettings.json file.
+            // This uses the connection string that was created in appsettings.json file. (Dependency Injection)
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             #endregion
@@ -66,6 +68,17 @@ namespace ProjectStone
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+
+            #endregion
+
+            #region Repository Services for Dependency Injection
+        
+            // Register Repository containers here.
+            // We will use AddScoped for databases to be used for the scope's lifetime. Meaning it will stay for one request. 
+            // If we use it multiple times, it will still use the same object.
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             #endregion
 

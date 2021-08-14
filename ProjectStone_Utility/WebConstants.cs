@@ -8,6 +8,8 @@ namespace ProjectStone_Utility
     /// <summary>
     /// Moved into ProjectStone_Utility from Project Stone after library creation.
     /// Add the reference of this Utility project into the Main project (Project Stone)
+    ///
+    /// Eliminate the use of magic strings. Create constants here.
     /// </summary>
     public class WebConstants
     {
@@ -23,5 +25,9 @@ namespace ProjectStone_Utility
 
         // Admin Email.
         public const string AdminEmail = "bwhyte21@outlook.com";
+
+        // Product Repository SelectListItems.
+        public const string CategoryName = "Category";
+        public const string SubCategoryName = "SubCategory";
     }
 }

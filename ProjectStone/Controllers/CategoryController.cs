@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using ProjectStone_DataAccess.Data;
+using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Models;
 using ProjectStone_Utility;
 
@@ -14,17 +15,38 @@ namespace ProjectStone.Controllers
     public class CategoryController : Controller
     {
         // Use dependency injection to grab an instance for the data to set in the CTOR.
-        private readonly ApplicationDbContext _db;
+        //private readonly ApplicationDbContext _db;
 
-        public CategoryController(ApplicationDbContext db)
+        // Now that we have an IRepository/Repository setup for Category, we will use that instead of calling ApplicationDbContext outright. DEPENDENCY INJECTION!
+        // This will enable more modularity for the project, changes only need happen in the Repository and NOT the controller(s).
+        private readonly ICategoryRepository _categoryRepo;
+
+        #region Previous CTOR using AppDbContext
+
+        //public CategoryController(ApplicationDbContext db)
+        //{
+        //    // To be used throughout controller.
+        //    _db = db;
+        //}
+
+        #endregion
+
+        public CategoryController(ICategoryRepository categoryRepo)
         {
-            // To be used throughout controller.
-            _db = db;
+            _categoryRepo = categoryRepo;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Category> categoryList = _db.Category;
+            #region Old Code
+
+            // Old
+            //IEnumerable<Category> categoryList = _db.Category;
+
+            #endregion
+
+            // New : we use the GetAll() instead since it's the Category Repo.
+            var categoryList = _categoryRepo.GetAll();
 
             return View(categoryList);
         }
@@ -43,11 +65,21 @@ namespace ProjectStone.Controllers
             // Server-side validation.
             if (ModelState.IsValid)
             {
+                #region Old Code
+
                 // Pull object information from Create page.
-                _db.Category.Add(obj);
+                //_db.Category.Add(obj);
 
                 // Add object to database using save changes.
-                _db.SaveChanges();
+                //_db.SaveChanges();
+
+                #endregion
+
+                // Now we must add objects thru the category repo.
+                _categoryRepo.Add(obj);
+
+                // and to save changes thru the category repo.
+                _categoryRepo.Save();
 
                 // Redirect to index to display updated list.
                 return RedirectToAction("Index");
@@ -61,11 +93,19 @@ namespace ProjectStone.Controllers
         {
             if (id is null or 0) { return NotFound(); }
 
-            // Find only works on primary key.
-            var obj = _db.Category.Find(id);
-            if (obj is null) { return NotFound(); }
+            // Find() only works on primary key.
+            
+            // Old
+            //var obj = _db.Category.Find(id);
+            //if (obj is null) { return NotFound(); }
 
-            return View(obj);
+            //return View(obj);
+
+            // New w/ CategoryRepo
+            var categoryObj = _categoryRepo.Find(id.GetValueOrDefault()); // Since the new Find() does not accept int?, we will use GetValueOrDefault()
+            if (categoryObj is null) { return NotFound(); }
+
+            return View(categoryObj);
         }
 
         // POST - Edit
@@ -75,8 +115,13 @@ namespace ProjectStone.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Category.Update(obj);
-                _db.SaveChanges();
+                // Old
+                //_db.Category.Update(obj);
+                //_db.SaveChanges();
+
+                // New
+                _categoryRepo.Update(obj);
+                _categoryRepo.Save();
 
                 return RedirectToAction("Index");
             }
@@ -89,10 +134,16 @@ namespace ProjectStone.Controllers
         {
             if (id is null or 0) { return NotFound(); }
 
-            var obj = _db.Category.Find(id);
-            if (obj is null) { return NotFound(); }
+            // Old
+            //var obj = _db.Category.Find(id);
+            //if (obj is null) { return NotFound(); }
 
-            return View(obj);
+            //return View(obj);
+
+            var categoryObj = _categoryRepo.Find(id.GetValueOrDefault());
+            if (categoryObj is null) { return NotFound(); }
+
+            return View(categoryObj);
         }
 
         // POST - Delete
@@ -100,12 +151,21 @@ namespace ProjectStone.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var obj = _db.Category.Find(id);
-            
-            if (obj is null) { NotFound(); }
+            // Old
+            //var obj = _db.Category.Find(id);
 
-            _db.Category.Remove(obj);
-            _db.SaveChanges();
+            //if (obj is null) { NotFound(); }
+
+            //_db.Category.Remove(obj);
+            //_db.SaveChanges();
+
+            // New
+            var categoryObj = _categoryRepo.Find(id.GetValueOrDefault());
+
+            if (categoryObj is null) { NotFound(); }
+
+            _categoryRepo.Remove(categoryObj);
+            _categoryRepo.Save();
 
             return RedirectToAction("Index");
         }
