@@ -43,14 +43,14 @@ namespace ProjectStone_DataAccess.Repository
             IQueryable<T> query = dbSet;
 
             // Check for a "Where" filter.
-            if (filter != null)
+            if (filter is not null)
             {
                 // Apply Where clause if there is a filter.
                 query = query.Where(filter);
             }
             
             // Check for "IncludeProperties".
-            if (includeProperties != null)
+            if (includeProperties is not null)
             {
                 // Remove any empty entities if any are found.
                 foreach (var includeProp in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -62,7 +62,7 @@ namespace ProjectStone_DataAccess.Repository
             }
             
             // Check for an "OrderBy" filter
-            if (orderBy != null)
+            if (orderBy is not null)
             {
                 // Set the query to be ordered via the parameter.
                 query = orderBy(query);
@@ -87,14 +87,14 @@ namespace ProjectStone_DataAccess.Repository
             IQueryable<T> query = dbSet;
 
             // Check for a "Where" filter.
-            if (filter != null)
+            if (filter is not null)
             {
                 // Apply Where clause if there is a filter.
                 query = query.Where(filter);
             }
             
             // Check for "IncludeProperties".
-            if (includeProperties != null)
+            if (includeProperties is not null)
             {
                 // Remove any empty entities if any are found.
                 foreach (var includeProp in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))

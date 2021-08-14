@@ -32,12 +32,12 @@ namespace ProjectStone.Controllers
         [BindProperty]
         public ProductUserViewModel ProductUserVm { get; set; }
 
-        public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender, IApplicationUserRepository appUserRepo, IProductRepository productRepo, 
+        public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender, IApplicationUserRepository userRepo, IProductRepository productRepo, 
             IInquiryHeaderRepository inqHeaderRepo, IInquiryDetailRepository inqDetailRepo)
         {
             _webHostEnvironment = webHostEnvironment;
             _emailSender = emailSender;
-            _userRepo = appUserRepo;
+            _userRepo = userRepo;
             _productRepo = productRepo;
             _inqHeaderRepo = inqHeaderRepo;
             _inqDetailRepo = inqDetailRepo;
@@ -48,7 +48,7 @@ namespace ProjectStone.Controllers
             var shoppingCartList = new List<ShoppingCart>();
 
             // Check for session.
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) != null 
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null 
                 && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 // Session exists. Set the shopping cart list to the existing one in the session.
@@ -84,7 +84,7 @@ namespace ProjectStone.Controllers
             // Get session, load list from session.
             var shoppingCartList = new List<ShoppingCart>();
 
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) != null 
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null 
                 && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
@@ -111,7 +111,7 @@ namespace ProjectStone.Controllers
         {
             // Capture App User Id.
             var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.Name);
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             // Send an email after inquiry submission, then show confirmation page.
             var templatePath = _webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar + "templates" + Path.DirectorySeparatorChar + "Inquiry.html";
@@ -186,7 +186,7 @@ namespace ProjectStone.Controllers
             var shoppingCartList = new List<ShoppingCart>();
 
             // Check for session.
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) != null 
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null 
                 && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 // Session exists. Set the shopping cart list to the existing one in the session.

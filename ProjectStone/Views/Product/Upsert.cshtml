@@ -7,7 +7,7 @@
 
 @* Add the enctype for images to work with this *@
 <form method="post" asp-action="Upsert" enctype="multipart/form-data">
-    @if (Model.Product.Id != 0)
+    @if (Model.Product.Id is not 0)
     {
         title = "Edit Product";
         <input asp-for="Product.Id" hidden/>
@@ -91,7 +91,7 @@
               <div class="col-8 offset-4 row">
 
                 <div class="col">
-                  @if (Model.Product.Id != 0)
+                  @if (Model.Product.Id is not 0)
                   {
                     // update
                     <input type="submit" value="Update" class="btn btn-info w-100" />
@@ -109,7 +109,7 @@
             </div>
           </div>
             <div class="col-4">
-                @if (Model.Product.Id != 0)
+                @if (Model.Product.Id is not 0)
                 {
                     <img src="@WebConstants.ImagePath@Model.Product.Image" style="width: 100%; border-radius: 5px; border: 1px solid gray;" alt="Product Image"/>
                 }

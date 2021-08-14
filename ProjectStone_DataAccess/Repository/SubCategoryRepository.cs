@@ -22,7 +22,7 @@ namespace ProjectStone_DataAccess.Repository
         {
             var objFromDb = FirstOrDefault(u => u.Id == categoryObj.Id);
             
-            if (objFromDb != null)
+            if (objFromDb is not null)
             {
                 objFromDb.Name = categoryObj.Name;
             }

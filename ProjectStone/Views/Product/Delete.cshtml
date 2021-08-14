@@ -65,7 +65,7 @@
         </div>
       </div>
       <div class="col-4">
-        @if (Model.Id != 0)
+        @if (Model.Id is not 0)
         {
           <img src="@WebConstants.ImagePath@Model.Image" style="width: 100%; border-radius: 5px; border: 1px solid gray;" alt="Product Image" />
         }

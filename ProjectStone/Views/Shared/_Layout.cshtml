@@ -60,7 +60,7 @@
                 @* Cart *@
                 <ul class="navbar-nav">
                     <li>
-                        @if (_httpContextAccessor.HttpContext?.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart) != null)
+                        @if (_httpContextAccessor.HttpContext?.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart) is not null)
                         {
                             <a asp-action="Index" asp-controller="Cart" class="nav-link">
                                 @{

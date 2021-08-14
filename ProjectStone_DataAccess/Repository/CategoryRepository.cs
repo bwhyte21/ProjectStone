@@ -30,7 +30,7 @@ namespace ProjectStone_DataAccess.Repository
             // ReSharper claims we do not need to call the qualifier "base" as it is a redundant call, so we will go with that.
             var objFromDb = FirstOrDefault(u => u.Id == categoryObj.Id);
             
-            if (objFromDb != null)
+            if (objFromDb is not null)
             {
                 objFromDb.Name = categoryObj.Name;
                 objFromDb.DisplayOrder = categoryObj.DisplayOrder;
