@@ -22,5 +22,15 @@ namespace ProjectStone.Controllers
         {
             return View();
         }
+
+        #region API Calls
+        // ToDo: separate this into its own Api Layer.
+        [HttpGet]
+        public IActionResult GetInquiryList()
+        {
+            return Json(new { data = _inqHeaderRepo.GetAll() });
+        }
+
+        #endregion
     }
 }
