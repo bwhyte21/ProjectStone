@@ -13,18 +13,20 @@ function loadDataTable(url) {
         },
         "columns": [
             { "data": "id", "width": "10%" },
-            { "data": "fullname", "width": "15%" },
-            { "data": "phonenumber", "width": "10%" },
+            { "data": "fullName", "width": "15%" }, // data columns MUST be in camelCase in order to work.
+            { "data": "phoneNumber", "width": "10%" },
             { "data": "email", "width": "10%" },
             {
                 "data": "id",
                 "render": function(data) {
                     // data = id of inquiry.
-                    return <div class="text-center">
+                    return `
+                            <div class="text-center">
                                <a href="/Inquiry/Details/${data}" class="btn btn-success text-white" style="cursor:pointer;">
-                                   <i class="fas fa-edit">></i>
+                                   <i class="fas fa-edit"></i>
                                </a>
-                           </div>;
+                            </div>
+                            `;
                 },
                 "width": "5%"
             }
