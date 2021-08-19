@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjectStone_DataAccess.Data;
 using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Models;
 using ProjectStone_Utility;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjectStone_DataAccess.Repository
 {
-    public class ProductRepository : Repository<Product>, IProductRepository
+  public class ProductRepository : Repository<Product>, IProductRepository
     {
         private readonly ApplicationDbContext _db;
 

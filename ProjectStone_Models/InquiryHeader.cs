@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectStone_Models
 {
-    public class InquiryHeader
+  public class InquiryHeader
     {
         [Key] // Primary Key for EF to recognize.
         public int Id { get; set; }

@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ProjectStone_Utility
+﻿namespace ProjectStone_Utility
 {
-    /// <summary>
-    /// Moved into ProjectStone_Utility from Project Stone after library creation.
-    /// Add the reference of this Utility project into the Main project (Project Stone)
-    ///
-    /// Eliminate the use of magic strings. Create constants here.
-    /// </summary>
-    public class WebConstants
+  /// <summary>
+  /// Moved into ProjectStone_Utility from Project Stone after library creation.
+  /// Add the reference of this Utility project into the Main project (Project Stone)
+  ///
+  /// Eliminate the use of magic strings. Create constants here.
+  /// </summary>
+  public class WebConstants
     {
         // Access ImagePath.
         public const string ImagePath = @"\imgs\product\";
 
         // Access App Session.
         public const string SessionCart = "ShoppingCartSession";
+        public const string SessionInquryId = "InquirySession";
 
         // User Roles. (Made const from static to be used in [Authorize(Roles = ...)]
         public const string AdminRole = "Admin";

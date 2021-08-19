@@ -1,20 +1,18 @@
-﻿using ProjectStone_DataAccess.Repository.IRepository;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectStone_DataAccess.Data;
+using ProjectStone_DataAccess.Repository.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ProjectStone_DataAccess.Data;
 
 namespace ProjectStone_DataAccess.Repository
 {
-    /// <summary>
-    /// This class essentially extends the use of AppDbContext
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class Repository<T> : IRepository<T> where T : class
+  /// <summary>
+  /// This class essentially extends the use of AppDbContext
+  /// </summary>
+  /// <typeparam name="T"></typeparam>
+  public class Repository<T> : IRepository<T> where T : class
     {
         // ApplicationDbContext is needed here.
         private readonly ApplicationDbContext _db;

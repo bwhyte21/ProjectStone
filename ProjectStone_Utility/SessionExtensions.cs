@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace ProjectStone_Utility
 {
-    // This class MUST be static.
+  // This class MUST be static.
   public static class SessionExtensions
   {
       // Serialize value.

@@ -1,17 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using ProjectStone_DataAccess.Data;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Models;
 using ProjectStone_Utility;
 
 namespace ProjectStone.Controllers
 {
-    [Authorize(Roles = WebConstants.AdminRole)]
+  [Authorize(Roles = WebConstants.AdminRole)]
     public class SubCategoryController : Controller
     {
         private readonly ISubCategoryRepository _subCategoryRepo;

@@ -1,4 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using ProjectStone_DataAccess.Repository.IRepository;
+using ProjectStone_Models;
+using ProjectStone_Models.ViewModels;
+using ProjectStone_Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,19 +13,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using ProjectStone_DataAccess.Data;
-using ProjectStone_DataAccess.Repository.IRepository;
-using ProjectStone_Models;
-using ProjectStone_Models.ViewModels;
-using ProjectStone_Utility;
 
 namespace ProjectStone.Controllers
 {
-    // Protect the cart. User must be logged in to see the cart.
-    [Authorize] // Can be placed at Controller level (here) or individual access level (e.g.; Index)
+  // Protect the cart. User must be logged in to see the cart.
+  [Authorize] // Can be placed at Controller level (here) or individual access level (e.g.; Index)
     public class CartController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;

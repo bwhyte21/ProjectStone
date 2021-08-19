@@ -1,24 +1,20 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using ProjectStone_DataAccess.Data;
 using ProjectStone_DataAccess.Repository;
 using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Utility;
+using System;
 
 namespace ProjectStone
 {
-    public class Startup
+  public class Startup
     {
         public Startup(IConfiguration configuration)
         {

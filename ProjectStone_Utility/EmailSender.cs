@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Mailjet.Client;
+﻿using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace ProjectStone_Utility
 {
-    public class EmailSender : IEmailSender // Use this paired with MailJet
+  public class EmailSender : IEmailSender // Use this paired with MailJet
     {
         // Use Dependency Injection to access the api keys directly.
         private readonly IConfiguration _config;

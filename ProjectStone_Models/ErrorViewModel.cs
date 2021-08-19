@@ -1,5 +1,3 @@
-using System;
-
 namespace ProjectStone_Models
 {
   public class ErrorViewModel

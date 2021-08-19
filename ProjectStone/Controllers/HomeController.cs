@@ -1,20 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Models;
-using System;
+using ProjectStone_Models.ViewModels;
+using ProjectStone_Utility;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ProjectStone_DataAccess.Data;
-using ProjectStone_DataAccess.Repository.IRepository;
-using ProjectStone_Models.ViewModels;
-using ProjectStone_Utility;
 
 namespace ProjectStone.Controllers
 {
-    public class HomeController : Controller
+  public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IProductRepository _productRepo;
