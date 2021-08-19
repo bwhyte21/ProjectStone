@@ -65,7 +65,7 @@
                                             <li class="list-group-item d-flex justify-content-between">
                                                 <div>
                                                     <h6 class="my-0">@Model.ProductList[i].Name</h6>
-                                                    <small class="text-muted">Price per Sqft: @((@Model.ProductList[i].Price).ToString("C"))</small>
+                                                    <small class="text-muted">Price per Sqft: @(Model.ProductList[i].Price.ToString("C"))</small>
                                                 </div>
                                             </li>
                                         }

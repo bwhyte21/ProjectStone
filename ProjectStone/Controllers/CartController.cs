@@ -35,6 +35,7 @@ namespace ProjectStone.Controllers
         public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender, IApplicationUserRepository userRepo, IProductRepository productRepo, 
             IInquiryHeaderRepository inqHeaderRepo, IInquiryDetailRepository inqDetailRepo)
         {
+            // Immutable objects.
             _webHostEnvironment = webHostEnvironment;
             _emailSender = emailSender;
             _userRepo = userRepo;
