@@ -76,6 +76,8 @@ namespace ProjectStone.Controllers
             // Set Session.
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
 
+            TempData[WebConstants.Success] = "Item added to cart.";
+            
             // Using nameof() instead of magic strings to prevent url mix-ups, e.g; "Index"
             return RedirectToAction(nameof(Index));
         }
@@ -98,6 +100,8 @@ namespace ProjectStone.Controllers
             
             // Set the session again, this time, with the new list.
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+            TempData[WebConstants.Success] = "Item removed from cart.";
+
             return RedirectToAction(nameof(Index));
         }
 

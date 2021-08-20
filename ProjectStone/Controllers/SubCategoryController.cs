@@ -36,8 +36,11 @@ namespace ProjectStone.Controllers
             {
                 _subCategoryRepo.Add(subCategoryObj);
                 _subCategoryRepo.Save();
+                TempData[WebConstants.Success] = "SubCategory created successfully!";
                 return Redirect("Index");
             }
+            
+            TempData[WebConstants.Error] = "Error creating SubCategory.";
 
             return View(subCategoryObj);
         }
@@ -63,9 +66,12 @@ namespace ProjectStone.Controllers
             {
                 _subCategoryRepo.Update(subCategoryObj);
                 _subCategoryRepo.Save();
+                TempData[WebConstants.Success] = "SubCategory modified successfully!";
 
                 return RedirectToAction("Index");
             }
+
+            TempData[WebConstants.Error] = "Error modifying SubCategory.";
 
             return View(subCategoryObj);
         }
@@ -92,6 +98,7 @@ namespace ProjectStone.Controllers
 
             _subCategoryRepo.Remove(subCategoryObj);
             _subCategoryRepo.Save();
+            TempData[WebConstants.Success] = "SubCategory deleted successfully!";
 
             return RedirectToAction("Index");
         }

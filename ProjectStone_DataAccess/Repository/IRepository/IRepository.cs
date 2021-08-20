@@ -51,6 +51,12 @@ namespace ProjectStone_DataAccess.Repository.IRepository
         /// </summary>
         /// <param name="entity"></param>
         void Remove(T entity);
+        
+        /// <summary>
+        /// Remove more than one generic object (T)
+        /// </summary>
+        /// <param name="entity"></param>
+        void RemoveRange(IEnumerable<T> entity);
 
         /// <summary>
         /// Save the changes to the DB.

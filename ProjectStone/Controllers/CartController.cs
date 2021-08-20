@@ -16,8 +16,8 @@ using System.Threading.Tasks;
 
 namespace ProjectStone.Controllers
 {
-  // Protect the cart. User must be logged in to see the cart.
-  [Authorize] // Can be placed at Controller level (here) or individual access level (e.g.; Index)
+    // Protect the cart. User must be logged in to see the cart.
+    [Authorize] // Can be placed at Controller level (here) or individual access level (e.g.; Index)
     public class CartController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -26,12 +26,12 @@ namespace ProjectStone.Controllers
         private readonly IProductRepository _productRepo;
         private readonly IInquiryHeaderRepository _inqHeaderRepo;
         private readonly IInquiryDetailRepository _inqDetailRepo;
-        
+
         // Once it's bound in the post, it does not need to be explicitly defined in the action method's parameter. It will be available by default in the summary post.
         [BindProperty]
         public ProductUserViewModel ProductUserVm { get; set; }
 
-        public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender, IApplicationUserRepository userRepo, IProductRepository productRepo, 
+        public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender, IApplicationUserRepository userRepo, IProductRepository productRepo,
             IInquiryHeaderRepository inqHeaderRepo, IInquiryDetailRepository inqDetailRepo)
         {
             // Immutable objects.
@@ -48,8 +48,7 @@ namespace ProjectStone.Controllers
             var shoppingCartList = new List<ShoppingCart>();
 
             // Check for session.
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null 
-                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 // Session exists. Set the shopping cart list to the existing one in the session.
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
@@ -57,7 +56,7 @@ namespace ProjectStone.Controllers
 
             // Using projections to get all products in the shopping cart into a form.
             var prodInCart = shoppingCartList.Select(i => i.ProductId).ToList();
-            
+
             // This acts as in IN clause in SQL. 
             // Retrieve all products WHERE Id matches any Id inside the ProdInCart list.
             var prodList = _productRepo.GetAll(u => prodInCart.Contains(u.Id));
@@ -70,10 +69,9 @@ namespace ProjectStone.Controllers
         [ActionName("Index")]
         public IActionResult IndexPost()
         {
-            
             return RedirectToAction(nameof(Summary));
         }
-        
+
         // Cart Summary
         public IActionResult Summary()
         {
@@ -84,8 +82,7 @@ namespace ProjectStone.Controllers
             // Get session, load list from session.
             var shoppingCartList = new List<ShoppingCart>();
 
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null 
-                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
             }
@@ -126,14 +123,10 @@ namespace ProjectStone.Controllers
 
             // Products for {3} in the template.
             var productListSb = new StringBuilder();
-            foreach (var prod in productUserViewModel.ProductList)
-            {
-                productListSb.Append($" - Name: {prod.Name} <span style='font-size:14px;'>(ID: {prod.Id})</span><br/>");
-            }
+            foreach (var prod in productUserViewModel.ProductList) { productListSb.Append($" - Name: {prod.Name} <span style='font-size:14px;'>(ID: {prod.Id})</span><br/>"); }
 
-            var messageBody = string.Format(htmlBody, 
-                productUserViewModel.ApplicationUser.FullName, productUserViewModel.ApplicationUser.Email, 
-                productUserViewModel.ApplicationUser.PhoneNumber, productListSb);
+            var messageBody = string.Format(htmlBody, productUserViewModel.ApplicationUser.FullName, productUserViewModel.ApplicationUser.Email, productUserViewModel.ApplicationUser.PhoneNumber,
+                productListSb);
 
             // Send inquiry email to admin.
             await _emailSender.SendEmailAsync(WebConstants.AdminEmail, emailSubject, messageBody);
@@ -166,8 +159,10 @@ namespace ProjectStone.Controllers
                 // Add detail to DB.
                 _inqDetailRepo.Add(inquiryDetail);
             }
+
             // Save to DB.
             _inqDetailRepo.Save();
+            TempData[WebConstants.Success] = "Inquiry submitted successfully!";
 
 
             return RedirectToAction(nameof(InquiryConfirmation));
@@ -177,7 +172,7 @@ namespace ProjectStone.Controllers
         {
             // Clear user session after inquiry submission.
             HttpContext.Session.Clear();
-      
+
             return View();
         }
 
@@ -186,8 +181,7 @@ namespace ProjectStone.Controllers
             var shoppingCartList = new List<ShoppingCart>();
 
             // Check for session.
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null 
-                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 // Session exists. Set the shopping cart list to the existing one in the session.
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);

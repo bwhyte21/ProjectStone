@@ -4,10 +4,12 @@ using ProjectStone_Models;
 using ProjectStone_Models.ViewModels;
 using ProjectStone_Utility;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectStone.Controllers
 {
-  public class InquiryController : Controller
+    [Authorize(Roles = WebConstants.AdminRole)]
+    public class InquiryController : Controller
     {
         private readonly IInquiryHeaderRepository _inqHeaderRepo;
         private readonly IInquiryDetailRepository _inqDetailRepo;
@@ -26,6 +28,7 @@ namespace ProjectStone.Controllers
         {
             return View();
         }
+
         public IActionResult Details(int id)
         {
             InquiryVm = new InquiryViewModel
@@ -33,9 +36,10 @@ namespace ProjectStone.Controllers
                 InquiryHeader = _inqHeaderRepo.FirstOrDefault(u => u.Id == id),
                 InquiryDetail = _inqDetailRepo.GetAll(u => u.InquiryHeaderId == id, includeProperties: "Product")
             };
-            
+
             return View(InquiryVm);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Details()
@@ -57,17 +61,40 @@ namespace ProjectStone.Controllers
                 // Now to add to the shopping cart list.
                 shoppingCartList.Add(shoppingCart);
             }
+
             // Now to clear previous session, update session shopping cart list, and add inquiry session id.
             HttpContext.Session.Clear();
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+
             // We need to know whether this session was set directly or using an inquiry.
-            HttpContext.Session.Set(WebConstants.SessionInquryId, InquiryVm.InquiryHeader.Id);
+            HttpContext.Session.Set(WebConstants.SessionInquiryId, InquiryVm.InquiryHeader.Id);
             
+            TempData[WebConstants.Success] = "Items added to cart!";
+
+
             // Redirect to shopping cart after.
             return RedirectToAction("Index", "Cart");
         }
 
-        #region API Calls
+        [HttpPost]
+        public IActionResult Delete()
+        {
+            var inquiryHeader = _inqHeaderRepo.FirstOrDefault(u => u.Id == InquiryVm.InquiryHeader.Id); // Since we have the header id in the details view as a hidden val, we will use that.
+            var inquiryDetails = _inqDetailRepo.GetAll(u => u.Id == InquiryVm.InquiryHeader.Id);
+
+            // Use newly added RemoveRange() method from Repository to remove all of the inquiry details.
+            _inqDetailRepo.RemoveRange(inquiryDetails);
+            _inqHeaderRepo.Remove(inquiryHeader);
+            // Header or details.save() will work as Save() does not depend on DbSet.
+            _inqHeaderRepo.Save();
+            TempData[WebConstants.Success] = "Inquiry deleted successfully!";
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        #region API CALLS
+
         // ToDo: separate this into its own Api Layer.
         [HttpGet]
         public IActionResult GetInquiryList()

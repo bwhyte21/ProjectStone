@@ -6,7 +6,7 @@ using ProjectStone_Utility;
 
 namespace ProjectStone.Controllers
 {
-  [Authorize(Roles = WebConstants.AdminRole)]
+    [Authorize(Roles = WebConstants.AdminRole)]
     public class CategoryController : Controller
     {
         // Use dependency injection to grab an instance for the data to set in the CTOR.
@@ -76,9 +76,15 @@ namespace ProjectStone.Controllers
                 // and to save changes thru the category repo.
                 _categoryRepo.Save();
 
+                // Set TempData for Toastr to inform user of successful category creation.
+                TempData[WebConstants.Success] = "Category created successfully!";
+
                 // Redirect to index to display updated list.
                 return RedirectToAction("Index");
             }
+
+            // Set TempData for Toastr to inform user of unsuccessful category creation.
+            TempData[WebConstants.Error] = "Error creating category.";
 
             return View(obj);
         }
@@ -89,7 +95,7 @@ namespace ProjectStone.Controllers
             if (id is null or 0) { return NotFound(); }
 
             // Find() only works on primary key.
-            
+
             // Old
             //var obj = _db.Category.Find(id);
             //if (obj is null) { return NotFound(); }
@@ -117,9 +123,11 @@ namespace ProjectStone.Controllers
                 // New
                 _categoryRepo.Update(obj);
                 _categoryRepo.Save();
+                TempData[WebConstants.Success] = "Category modified successfully!";
 
                 return RedirectToAction("Index");
             }
+            TempData[WebConstants.Error] = "Error modifying category.";
 
             return View(obj);
         }
@@ -161,6 +169,7 @@ namespace ProjectStone.Controllers
 
             _categoryRepo.Remove(categoryObj);
             _categoryRepo.Save();
+            TempData[WebConstants.Success] = "Category deleted successfully!";
 
             return RedirectToAction("Index");
         }

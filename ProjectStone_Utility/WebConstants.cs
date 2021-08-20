@@ -13,7 +13,7 @@
 
         // Access App Session.
         public const string SessionCart = "ShoppingCartSession";
-        public const string SessionInquryId = "InquirySession";
+        public const string SessionInquiryId = "InquirySession";
 
         // User Roles. (Made const from static to be used in [Authorize(Roles = ...)]
         public const string AdminRole = "Admin";
@@ -25,5 +25,9 @@
         // Product Repository SelectListItems.
         public const string CategoryName = "Category";
         public const string SubCategoryName = "SubCategory";
+
+        // Tool Notification Constants.
+        public const string Success = "Success";
+        public const string Error = "Error";
     }
 }

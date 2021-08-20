@@ -10,7 +10,7 @@ using System.IO;
 
 namespace ProjectStone.Controllers
 {
-  [Authorize(Roles = WebConstants.AdminRole)]
+    [Authorize(Roles = WebConstants.AdminRole)]
     public class ProductController : Controller
     {
         private readonly IProductRepository _productRepo;
@@ -25,28 +25,32 @@ namespace ProjectStone.Controllers
         public IActionResult Index()
         {
             #region before eager loading (older)
+
             //IEnumerable<Product> productList = _db.Product;
 
             // To access Category, we need to load it in.
             //foreach (var obj in productList)
             //{
-                // Foreach object in the product list, it will load the category model based on this condition (below)
-                //obj.Category = _db.Category.FirstOrDefault(u => u.Id == obj.CategoryId);
-                //obj.SubCategory = _db.SubCategory.FirstOrDefault(u => u.Id == obj.SubCategoryTypeId);
+            // Foreach object in the product list, it will load the category model based on this condition (below)
+            //obj.Category = _db.Category.FirstOrDefault(u => u.Id == obj.CategoryId);
+            //obj.SubCategory = _db.SubCategory.FirstOrDefault(u => u.Id == obj.SubCategoryTypeId);
             //}
+
             #endregion
-         
+
             #region using eagar loading (old)
-            
+
             // Replacing commented code block in region with this method of eagar loading.
             //IEnumerable<Product> productList = _db.Product.Include(u => u.Category).Include(u => u.SubCategory);
-            
+
             #endregion
 
             #region using eagar loading with new Repository Pattern
+
             // Use the GetAll(...) params to invoke the .Include part of it.
             // Literally _db.Product.Include(u => u.Category).Include(u => u.SubCategory) vs _productRepo.GetAll(includeProperties:"Category,SubCategory")
-            var productList = _productRepo.GetAll(includeProperties:"Category,SubCategory"); // No spaces in the "includeProperties:" string, everything will break.
+            var productList = _productRepo.GetAll(includeProperties: "Category,SubCategory"); // No spaces in the "includeProperties:" string, everything will break.
+
             #endregion
 
             return View(productList);
@@ -56,6 +60,7 @@ namespace ProjectStone.Controllers
         public IActionResult Upsert(int? id)
         {
             #region Before Repo Pattern
+
             //var productViewModel = new ProductViewModel
             //{
             //    Product = new Product(),
@@ -70,6 +75,7 @@ namespace ProjectStone.Controllers
             //        Value = i.Id.ToString()
             //    })
             //};
+
             #endregion
 
             // Use new method from ProductRepository. Two for the price of one.
@@ -158,6 +164,7 @@ namespace ProjectStone.Controllers
 
                 // Save to DB.
                 _productRepo.Save();
+                TempData[WebConstants.Success] = "Action completed successfully!";
 
                 return RedirectToAction("Index");
             }
@@ -165,6 +172,7 @@ namespace ProjectStone.Controllers
             // To prevent any weird happenstances if the modelState is not valid, populate the CategoryList.
             productViewModel.CategorySelectList = _productRepo.GetAllDropdownList(WebConstants.CategoryName);
             productViewModel.SubCategorySelectList = _productRepo.GetAllDropdownList(WebConstants.SubCategoryName);
+            TempData[WebConstants.Error] = "Error performing upsert action.";
 
             return View(productViewModel);
         }
@@ -177,7 +185,7 @@ namespace ProjectStone.Controllers
             // "Include" category dropdown value when looking for product. (Eager loading)
             // Old.
             //var productFromDb = _db.Product.Include(u => u.Category).Include(u => u.SubCategory).FirstOrDefault(u => u.Id == id);
-            
+
             // New.
             var productFromDb = _productRepo.FirstOrDefault(u => u.Id == id, "Category,SubCategory"); // "includeProperties:" was marked as redundant, so we will remove it from this line.
 
@@ -188,7 +196,8 @@ namespace ProjectStone.Controllers
 
         // POST - Delete
         // ActionName = Custom action name to let .NetCore know this is a Delete Action as well.
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
@@ -207,6 +216,7 @@ namespace ProjectStone.Controllers
 
             _productRepo.Remove(productObj);
             _productRepo.Save();
+            TempData[WebConstants.Success] = "Action completed successfully!";
 
             return RedirectToAction("Index");
         }
