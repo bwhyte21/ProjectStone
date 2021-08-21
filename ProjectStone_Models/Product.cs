@@ -6,6 +6,12 @@ namespace ProjectStone_Models
 {
   public class Product
     {
+        public Product()
+        {
+            // Pre-set TempSqFt to 1 for the range.
+            TempSqFt = 1;
+        }
+
         [Key] 
         public int Id { get; set; }
         
@@ -34,5 +40,10 @@ namespace ProjectStone_Models
         
         [ForeignKey("SubCategoryTypeId")]
         public virtual SubCategory SubCategory { get; set; }
+
+        // Temp data for a specific user when they wish to add an item to the cart. This is only for the session and transaction log.
+        [NotMapped] // Prevents this property from being added to the next EF migration.
+        [Range(1,10000)]
+        public int TempSqFt { get; set; }
     }
 }

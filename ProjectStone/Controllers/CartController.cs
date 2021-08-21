@@ -16,8 +16,8 @@ using System.Threading.Tasks;
 
 namespace ProjectStone.Controllers
 {
-    // Protect the cart. User must be logged in to see the cart.
-    [Authorize] // Can be placed at Controller level (here) or individual access level (e.g.; Index)
+  // Protect the cart. User must be logged in to see the cart.
+  [Authorize] // Can be placed at Controller level (here) or individual access level (e.g.; Index)
     public class CartController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -59,7 +59,19 @@ namespace ProjectStone.Controllers
 
             // This acts as in IN clause in SQL. 
             // Retrieve all products WHERE Id matches any Id inside the ProdInCart list.
-            var prodList = _productRepo.GetAll(u => prodInCart.Contains(u.Id));
+            var prodListTemp = _productRepo.GetAll(u => prodInCart.Contains(u.Id)).ToList(); // New: Set this IEnumerable .ToList() to prevent possible multiple enumerations in the foreach below.
+            IList<Product> prodList = new List<Product>();
+
+            // We need to now populate the SqFt in the product list based on the session in the cart.
+            foreach (var cartObj in shoppingCartList)
+            {
+                var prodTemp = prodListTemp.FirstOrDefault(u => u.Id == cartObj.ProductId);
+
+                if (prodTemp == null) continue;
+                
+                prodTemp.TempSqFt = cartObj.SqFt;
+                prodList.Add(prodTemp);
+            }
 
             return View(prodList);
         }
@@ -67,8 +79,25 @@ namespace ProjectStone.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Index")]
-        public IActionResult IndexPost()
+        public IActionResult IndexPost(IEnumerable<Product> productList)
         {
+            // In case a user decides to change the value THEN click continue, rather than Update.
+            var shoppingCartList = new List<ShoppingCart>();
+
+            // Iterate through all the objects to set the SqFt value.
+            foreach (var product in productList)
+            {
+                shoppingCartList.Add(new ShoppingCart
+                {
+                    ProductId = product.Id,
+                    SqFt = product.TempSqFt
+                });
+            }
+
+            // Update current session with updated shopping cart.
+            HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+            
+            // Navigate to Summary.
             return RedirectToAction(nameof(Summary));
         }
 
@@ -76,6 +105,10 @@ namespace ProjectStone.Controllers
         public IActionResult Summary()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
+
+            // If claimsIdentity is null for some reason, bounce.
+            if (claimsIdentity is null) return View(ProductUserVm);
+
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier); // Gets populated if user has logged in.
             //var userId = User.FindFirstValue(ClaimTypes.Name); // Retrieves user's Id
 
@@ -108,56 +141,59 @@ namespace ProjectStone.Controllers
         {
             // Capture App User Id.
             var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            // Send an email after inquiry submission, then show confirmation page.
-            var templatePath = _webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar + "templates" + Path.DirectorySeparatorChar + "Inquiry.html";
-
-            const string emailSubject = "New Inquiry";
-            var htmlBody = "";
-            using (var streamReader = System.IO.File.OpenText(templatePath))
+            if (claimsIdentity is not null)
             {
-                // Stream the html template into the html body.
-                htmlBody = await streamReader.ReadToEndAsync();
-            }
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            // Products for {3} in the template.
-            var productListSb = new StringBuilder();
-            foreach (var prod in productUserViewModel.ProductList) { productListSb.Append($" - Name: {prod.Name} <span style='font-size:14px;'>(ID: {prod.Id})</span><br/>"); }
+                // Send an email after inquiry submission, then show confirmation page.
+                var templatePath = _webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar + "templates" + Path.DirectorySeparatorChar + "Inquiry.html";
 
-            var messageBody = string.Format(htmlBody, productUserViewModel.ApplicationUser.FullName, productUserViewModel.ApplicationUser.Email, productUserViewModel.ApplicationUser.PhoneNumber,
-                productListSb);
-
-            // Send inquiry email to admin.
-            await _emailSender.SendEmailAsync(WebConstants.AdminEmail, emailSubject, messageBody);
-
-            // Add Inquiry Header and Detail to DB.
-            var inquiryHeader = new InquiryHeader
-            {
-                ApplicationUserId = claim.Value,
-                FullName = productUserViewModel.ApplicationUser.FullName,
-                Email = productUserViewModel.ApplicationUser.Email,
-                PhoneNumber = productUserViewModel.ApplicationUser.PhoneNumber,
-                InquiryDate = DateTime.Now
-            };
-
-            // Get Id of header to populate in detail. Add record to db.
-            _inqHeaderRepo.Add(inquiryHeader);
-            // Save to DB.
-            _inqHeaderRepo.Save();
-
-            // Create records per item in cart.
-            foreach (var product in productUserViewModel.ProductList)
-            {
-                // For each product, there is to be an inquiry detail.
-                var inquiryDetail = new InquiryDetail
+                const string emailSubject = "New Inquiry";
+                string htmlBody;
+                using (var streamReader = System.IO.File.OpenText(templatePath))
                 {
-                    InquiryHeaderId = inquiryHeader.Id,
-                    ProductId = product.Id
+                    // Stream the html template into the html body.
+                    htmlBody = await streamReader.ReadToEndAsync();
+                }
+
+                // Products for {3} in the template.
+                var productListSb = new StringBuilder();
+                foreach (var prod in productUserViewModel.ProductList) { productListSb.Append($" - Name: {prod.Name} <span style='font-size:14px;'>(ID: {prod.Id})</span><br/>"); }
+
+                var messageBody = string.Format(htmlBody, productUserViewModel.ApplicationUser.FullName, productUserViewModel.ApplicationUser.Email, productUserViewModel.ApplicationUser.PhoneNumber,
+                    productListSb);
+
+                // Send inquiry email to admin.
+                await _emailSender.SendEmailAsync(WebConstants.AdminEmail, emailSubject, messageBody);
+
+                // Add Inquiry Header and Detail to DB.
+                var inquiryHeader = new InquiryHeader
+                {
+                    ApplicationUserId = claim?.Value,
+                    FullName = productUserViewModel.ApplicationUser.FullName,
+                    Email = productUserViewModel.ApplicationUser.Email,
+                    PhoneNumber = productUserViewModel.ApplicationUser.PhoneNumber,
+                    InquiryDate = DateTime.Now
                 };
 
-                // Add detail to DB.
-                _inqDetailRepo.Add(inquiryDetail);
+                // Get Id of header to populate in detail. Add record to db.
+                _inqHeaderRepo.Add(inquiryHeader);
+                // Save to DB.
+                _inqHeaderRepo.Save();
+
+                // Create records per item in cart.
+                foreach (var product in productUserViewModel.ProductList)
+                {
+                    // For each product, there is to be an inquiry detail.
+                    var inquiryDetail = new InquiryDetail
+                    {
+                        InquiryHeaderId = inquiryHeader.Id,
+                        ProductId = product.Id
+                    };
+
+                    // Add detail to DB.
+                    _inqDetailRepo.Add(inquiryDetail);
+                }
             }
 
             // Save to DB.
@@ -194,6 +230,28 @@ namespace ProjectStone.Controllers
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
 
             // Then redirect to index.
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateCart(IEnumerable<Product> productList)
+        {
+            var shoppingCartList = new List<ShoppingCart>();
+
+            // Iterate through all the objects to set the SqFt value.
+            foreach (var product in productList)
+            {
+                shoppingCartList.Add(new ShoppingCart
+                {
+                    ProductId = product.Id,
+                    SqFt = product.TempSqFt
+                });
+            }
+
+            // Update current session with updated shopping cart.
+            HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+
             return RedirectToAction(nameof(Index));
         }
     }

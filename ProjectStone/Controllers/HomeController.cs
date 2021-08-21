@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace ProjectStone.Controllers
 {
-  public class HomeController : Controller
+    public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IProductRepository _productRepo;
@@ -27,7 +27,7 @@ namespace ProjectStone.Controllers
         {
             var homeViewModel = new HomeViewModel
             {
-                Products = _productRepo.GetAll(includeProperties:"Category,SubCategory"),
+                Products = _productRepo.GetAll(includeProperties: "Category,SubCategory"),
                 Categories = _categoryRepo.GetAll()
             };
 
@@ -59,7 +59,7 @@ namespace ProjectStone.Controllers
 
         [HttpPost]
         [ActionName("Details")]
-        public IActionResult DetailsPost(int id)
+        public IActionResult DetailsPost(int id, DetailsViewModel detailsViewModel)
         {
             var shoppingCartList = new List<ShoppingCart>();
 
@@ -71,13 +71,17 @@ namespace ProjectStone.Controllers
             }
 
             // Add item to shopping cart.
-            shoppingCartList.Add(new ShoppingCart { ProductId = id });
+            shoppingCartList.Add(new ShoppingCart
+            {
+                ProductId = id,
+                SqFt = detailsViewModel.Product.TempSqFt
+            });
 
             // Set Session.
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
 
             TempData[WebConstants.Success] = "Item added to cart.";
-            
+
             // Using nameof() instead of magic strings to prevent url mix-ups, e.g; "Index"
             return RedirectToAction(nameof(Index));
         }
@@ -93,11 +97,8 @@ namespace ProjectStone.Controllers
             // Using LINQ, get the item to remove.
             var itemToRemove = shoppingCartList.SingleOrDefault(r => r.ProductId == id);
 
-            if (itemToRemove is not null)
-            {
-                shoppingCartList.Remove(itemToRemove);
-            }
-            
+            if (itemToRemove is not null) { shoppingCartList.Remove(itemToRemove); }
+
             // Set the session again, this time, with the new list.
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
             TempData[WebConstants.Success] = "Item removed from cart.";
