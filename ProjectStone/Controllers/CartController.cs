@@ -104,18 +104,49 @@ namespace ProjectStone.Controllers
         // Cart Summary
         public IActionResult Summary()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            ApplicationUser appUser;
 
-            // If claimsIdentity is null for some reason, bounce.
-            if (claimsIdentity is null) return View(ProductUserVm);
+            // If admin user.
+            if (User.IsInRole(WebConstants.AdminRole))
+            {
+                    // If cart has been loaded using an inquiry.
+                if (HttpContext.Session.Get<int>(WebConstants.SessionInquiryId) is not 0)
+                {
+                    // Retrieve Id from DB.
+                    var inquiryHeader = _inqHeaderRepo.FirstOrDefault(u => u.Id == HttpContext.Session.Get<int>(WebConstants.SessionInquiryId));
+                    appUser = new ApplicationUser
+                    {
+                        Email = inquiryHeader.Email,
+                        FullName = inquiryHeader.FullName,
+                        PhoneNumber = inquiryHeader.PhoneNumber
+                    };
+                }
+                else
+                {
+                    // This means the user is Admin User that wants to place an order for a customer.
+                    appUser = new ApplicationUser();
+                }
+            }
+            else // If not an admin user.
+            {
+                // Get user details of logged in customer using claims.
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                // If claimsIdentity is null for some reason, bounce.
+                if (claimsIdentity is null) return View(ProductUserVm);
 
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier); // Gets populated if user has logged in.
-            //var userId = User.FindFirstValue(ClaimTypes.Name); // Retrieves user's Id
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier); // Gets populated if user has logged in.
+                //var userId = User.FindFirstValue(ClaimTypes.Name); // Retrieves user's Id
+
+                // Assign the appUser using the user repository for the details.
+                appUser = _userRepo.FirstOrDefault(u => u.Id == claim.Value);
+            }
+            
 
             // Get session, load list from session.
             var shoppingCartList = new List<ShoppingCart>();
 
-            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart) is not null && 
+                HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstants.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
             }
@@ -127,9 +158,21 @@ namespace ProjectStone.Controllers
             ProductUserVm = new ProductUserViewModel
             {
                 // claim.Value should have the Id of the logged in user.
-                ApplicationUser = _userRepo.FirstOrDefault(u => u.Id == claim.Value),
-                ProductList = prodList.ToList()
+                ApplicationUser = appUser
             };
+
+            // Update session to have SqFt count.
+            foreach (var cartObj in shoppingCartList)
+            {
+                // Retrieve each product.
+                var prodTemp = _productRepo.FirstOrDefault(u => u.Id == cartObj.ProductId);
+
+                // Update SqFt for this product.
+                prodTemp.TempSqFt = cartObj.SqFt;
+                
+                // Update Product list with Products that have adjusted SqFt values.
+                ProductUserVm.ProductList.Add(prodTemp);
+            }
 
             return View(ProductUserVm);
         }
