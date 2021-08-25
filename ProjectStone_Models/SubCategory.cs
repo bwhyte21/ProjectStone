@@ -2,9 +2,12 @@
 
 namespace ProjectStone_Models
 {
-  public class SubCategory
+    public class SubCategory
     {
-        [Key] public int Id { get; set; }
-        [Required] public string Name { get; set; }
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using ProjectStone_DataAccess.Repository;
 using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Utility;
 using System;
+using ProjectStone_Utility.BrainTree;
 
 namespace ProjectStone
 {
@@ -67,6 +68,13 @@ namespace ProjectStone
 
             #endregion
 
+            #region Braintree Services for 3rd Party Payments using Dependency Injection
+            // Configure BrainTree settings based on appsettings.json file. This method works the same as how MailJet was setup, but this way is cleaner.
+            //  Everything should be registered ONCE, here, in the container, Startup.cs
+            services.Configure<BrainTreeSettings>(Configuration.GetSection("BrainTree"));
+            services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
+            #endregion
+
             #region Repository Services for Dependency Injection
         
             // Register Repository containers here.
@@ -77,6 +85,8 @@ namespace ProjectStone
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IInquiryHeaderRepository, InquiryHeaderRepository>();
             services.AddScoped<IInquiryDetailRepository, InquiryDetailRepository>();
+            services.AddScoped<IOrderHeaderRepository, OrderHeaderRepository>();
+            services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
 
             #endregion

@@ -1,5 +1,16 @@
-﻿<div class="text-center">
-    <h1 class="text-info">Inquiry Confirmation</h1>
-    <p>We have received your inquiry. Sit tight! Someone from our team will contact you shortly!</p>
-    <img src="~/imgs/patio.jpg" alt="Inquiry Confirmation" style="width: 80%"/>
+﻿@model ProjectStone_Models.OrderHeader
+
+<div class="text-center">
+    @if (Model is not null)
+    {
+        <h1 class="text-info">Order Created</h1>
+        <p>Order #@Model.Id has been successfully created!</p>
+        <img src="~/imgs/patio.jpg" alt="Order Confirmation" style="width: 80%"/>
+    }
+    else
+    {
+        <h1 class="text-info">Inquiry Confirmation</h1>
+        <p>We have received your inquiry. Sit tight! Someone from our team will contact you shortly!</p>
+        <img src="~/imgs/patio.jpg" alt="Inquiry Confirmation" style="width: 80%"/>
+    }
 </div>

@@ -1,9 +1,9 @@
 ﻿namespace ProjectStone_Models
 {
-  public class ShoppingCart
-  {
-      public int ProductId { get; set; }
+    public class ShoppingCart
+    {
+        public int ProductId { get; set; }
 
-      public int SqFt { get; set; }
-  }
+        public int SqFt { get; set; }
+    }
 }

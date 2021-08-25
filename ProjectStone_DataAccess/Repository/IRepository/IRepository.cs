@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectStone_DataAccess.Repository.IRepository
 {
-    /// <summary>
-    /// This is our Generic interface for our generic repository, Repository.cs, to be used
-    /// throughout the project for Dependency Injection.
-    /// </summary>
-    public interface IRepository<T> where T : class
+  /// <summary>
+  /// This is our Generic interface for our generic repository, Repository.cs, to be used
+  /// throughout the project for Dependency Injection.
+  /// </summary>
+  public interface IRepository<T> where T : class
     {
         /// <summary>
         /// C# Generic method here! When we create an interface on SubCategory, for example, then

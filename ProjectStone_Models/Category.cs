@@ -4,12 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProjectStone_Models
 {
-  public class Category
+    public class Category
     {
         // Data annotations "[Key]" for table to identify primary key. To keep it explicit, use [Key].
-        [Key] public int Id { get; set; }
+        [Key]
+        public int Id { get; set; }
 
-        [Required] public string Name { get; set; }
+        [Required]
+        public string Name { get; set; }
 
         // Using Data Annotations change text format.
         [DisplayName("Display Order")]

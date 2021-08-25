@@ -29,5 +29,13 @@
         // Tool Notification Constants.
         public const string Success = "Success";
         public const string Error = "Error";
+
+        // Order Status.
+        public const string StatusPending = "Pending";
+        public const string StatusApproved = "Approved";
+        public const string StatusInProgress = "Processing";
+        public const string StatusShipped = "Shipped";
+        public const string StatusCancelled = "Cancelled";
+        public const string StatusRefunded = "Refunded";
     }
 }

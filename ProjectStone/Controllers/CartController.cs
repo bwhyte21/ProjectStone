@@ -26,13 +26,15 @@ namespace ProjectStone.Controllers
         private readonly IProductRepository _productRepo;
         private readonly IInquiryHeaderRepository _inqHeaderRepo;
         private readonly IInquiryDetailRepository _inqDetailRepo;
+        private readonly IOrderHeaderRepository _orderHeaderRepo;
+        private readonly IOrderDetailRepository _orderDetailRepo;
 
         // Once it's bound in the post, it does not need to be explicitly defined in the action method's parameter. It will be available by default in the summary post.
         [BindProperty]
         public ProductUserViewModel ProductUserVm { get; set; }
 
         public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender, IApplicationUserRepository userRepo, IProductRepository productRepo,
-            IInquiryHeaderRepository inqHeaderRepo, IInquiryDetailRepository inqDetailRepo)
+            IInquiryHeaderRepository inqHeaderRepo, IInquiryDetailRepository inqDetailRepo, IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo)
         {
             // Immutable objects.
             _webHostEnvironment = webHostEnvironment;
@@ -41,6 +43,8 @@ namespace ProjectStone.Controllers
             _productRepo = productRepo;
             _inqHeaderRepo = inqHeaderRepo;
             _inqDetailRepo = inqDetailRepo;
+            _orderHeaderRepo = orderHeaderRepo;
+            _orderDetailRepo = orderDetailRepo;
         }
 
         public IActionResult Index()
@@ -141,7 +145,6 @@ namespace ProjectStone.Controllers
                 appUser = _userRepo.FirstOrDefault(u => u.Id == claim.Value);
             }
             
-
             // Get session, load list from session.
             var shoppingCartList = new List<ShoppingCart>();
 
@@ -151,8 +154,8 @@ namespace ProjectStone.Controllers
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
             }
 
-            var prodInCart = shoppingCartList.Select(i => i.ProductId).ToList();
-            var prodList = _productRepo.GetAll(u => prodInCart.Contains(u.Id));
+            //var prodInCart = shoppingCartList.Select(i => i.ProductId).ToList();
+            //var prodList = _productRepo.GetAll(u => prodInCart.Contains(u.Id));
 
             // Retrieve the user details based on the user's ID.
             ProductUserVm = new ProductUserViewModel
@@ -184,10 +187,71 @@ namespace ProjectStone.Controllers
         {
             // Capture App User Id.
             var claimsIdentity = (ClaimsIdentity)User.Identity;
-            if (claimsIdentity is not null)
+            if (claimsIdentity is null)
             {
-                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                // Alert if ever null.
+                TempData[WebConstants.Error] = "claimsIdentity is null!";
+                return RedirectToAction(nameof(InquiryConfirmation));
+            }
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
+            // If user is an admin...
+            if (User.IsInRole(WebConstants.AdminRole))
+            {
+                // we create an order.
+                #region Pre Linq Expression
+                // Before LINQ Expression
+                //var orderTotal = 0.0;
+                //foreach (var product in productUserViewModel.ProductList)
+                //{
+                //    orderTotal += product.Price * product.TempSqFt;
+                //}
+                #endregion
+
+                // Using LINQ Expression for the foreach loop.
+                var orderTotal = productUserViewModel.ProductList.Sum(product => product.Price * product.TempSqFt); // This can also be moved into the Obj init below for FinalOrderTotal.
+
+                var orderHeader = new OrderHeader
+                {
+                    CreatedByUserId = claim?.Value, // Id of logged in user, mainly an admin.
+                    FullName = productUserViewModel.ApplicationUser.FullName,
+                    Email = productUserViewModel.ApplicationUser.Email,
+                    PhoneNumber = productUserViewModel.ApplicationUser.PhoneNumber,
+                    StreetAddress = productUserViewModel.ApplicationUser.Address,
+                    City = productUserViewModel.ApplicationUser.City,
+                    State = productUserViewModel.ApplicationUser.State,
+                    PostalCode = productUserViewModel.ApplicationUser.PostalCode,
+                    FinalOrderTotal = orderTotal,
+                    OrderDate = DateTime.Now,
+                    OrderStatus = WebConstants.StatusPending
+                };
+
+                _orderHeaderRepo.Add(orderHeader);
+                _orderHeaderRepo.Save();
+
+                // Similar setup to InquiryDetail (see below)
+                foreach (var product in productUserViewModel.ProductList)
+                {
+                    var orderDetail = new OrderDetail
+                    {
+                        OrderHeaderId = orderHeader.Id,
+                        PricePerSqFt = product.Price,
+                        SqFt = product.TempSqFt,
+                        ProductId = product.Id
+                    };
+
+                    _orderDetailRepo.Add(orderDetail);
+                }
+
+                _orderDetailRepo.Save();
+                TempData[WebConstants.Success] = "Order submitted successfully!";
+
+                // Redirect to Inquiry Confirmation with OrderId attached.
+                return RedirectToAction(nameof(InquiryConfirmation), new { id = orderHeader.Id });
+            }
+            else // If customer...
+            {
+                // we create an inquiry.
                 // Send an email after inquiry submission, then show confirmation page.
                 var templatePath = _webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar + "templates" + Path.DirectorySeparatorChar + "Inquiry.html";
 
@@ -203,8 +267,8 @@ namespace ProjectStone.Controllers
                 var productListSb = new StringBuilder();
                 foreach (var prod in productUserViewModel.ProductList) { productListSb.Append($" - Name: {prod.Name} <span style='font-size:14px;'>(ID: {prod.Id})</span><br/>"); }
 
-                var messageBody = string.Format(htmlBody, productUserViewModel.ApplicationUser.FullName, productUserViewModel.ApplicationUser.Email, productUserViewModel.ApplicationUser.PhoneNumber,
-                    productListSb);
+                var messageBody = string.Format(htmlBody, productUserViewModel.ApplicationUser.FullName, productUserViewModel.ApplicationUser.Email,
+                    productUserViewModel.ApplicationUser.PhoneNumber, productListSb);
 
                 // Send inquiry email to admin.
                 await _emailSender.SendEmailAsync(WebConstants.AdminEmail, emailSubject, messageBody);
@@ -237,22 +301,29 @@ namespace ProjectStone.Controllers
                     // Add detail to DB.
                     _inqDetailRepo.Add(inquiryDetail);
                 }
+
+                // Save to DB.
+                _inqDetailRepo.Save();
+                TempData[WebConstants.Success] = "Inquiry submitted successfully!";
             }
-
-            // Save to DB.
-            _inqDetailRepo.Save();
-            TempData[WebConstants.Success] = "Inquiry submitted successfully!";
-
 
             return RedirectToAction(nameof(InquiryConfirmation));
         }
 
-        public IActionResult InquiryConfirmation()
+        /// <summary>
+        /// Default id is 0, meaning it's an inquiry, if id is greater than 0, it is an order.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult InquiryConfirmation(int id = 0)
         {
+            // Pass in the order header if value is other than default (0)
+            var orderHeader = _orderHeaderRepo.FirstOrDefault(u => u.Id == id);
+
             // Clear user session after inquiry submission.
             HttpContext.Session.Clear();
 
-            return View();
+            return View(orderHeader);
         }
 
         public IActionResult Remove(int id)
