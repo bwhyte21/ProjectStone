@@ -1,48 +1,56 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ProjectStone.Data;
-using ProjectStone.Models;
-using ProjectStone.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using ProjectStone_DataAccess.Repository.IRepository;
+using ProjectStone_Models;
+using ProjectStone_Models.ViewModels;
+using ProjectStone_Utility;
+using System;
+using System.IO;
 
 namespace ProjectStone.Controllers
 {
+    [Authorize(Roles = WebConstants.AdminRole)]
     public class ProductController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IProductRepository _productRepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment)
+        public ProductController(IProductRepository productRepo, IWebHostEnvironment webHostEnvironment)
         {
-            _db = db;
+            _productRepo = productRepo;
             _webHostEnvironment = webHostEnvironment; // Using DI to get webhostenv.
         }
 
         public IActionResult Index()
         {
-            #region before eager loading
+            #region before eager loading (older)
+
             //IEnumerable<Product> productList = _db.Product;
 
             // To access Category, we need to load it in.
             //foreach (var obj in productList)
             //{
-                // Foreach object in the product list, it will load the category model based on this condition (below)
-                //obj.Category = _db.Category.FirstOrDefault(u => u.Id == obj.CategoryId);
-                //obj.SubCategory = _db.SubCategory.FirstOrDefault(u => u.Id == obj.SubCategoryTypeId);
+            // Foreach object in the product list, it will load the category model based on this condition (below)
+            //obj.Category = _db.Category.FirstOrDefault(u => u.Id == obj.CategoryId);
+            //obj.SubCategory = _db.SubCategory.FirstOrDefault(u => u.Id == obj.SubCategoryTypeId);
             //}
+
             #endregion
-         
-            #region using eagar loading
-            
+
+            #region using eagar loading (old)
+
             // Replacing commented code block in region with this method of eagar loading.
-            IEnumerable<Product> productList = _db.Product.Include(u => u.Category).Include(u => u.SubCategory);
-            
+            //IEnumerable<Product> productList = _db.Product.Include(u => u.Category).Include(u => u.SubCategory);
+
+            #endregion
+
+            #region using eagar loading with new Repository Pattern
+
+            // Use the GetAll(...) params to invoke the .Include part of it.
+            // Literally _db.Product.Include(u => u.Category).Include(u => u.SubCategory) vs _productRepo.GetAll(includeProperties:"Category,SubCategory")
+            var productList = _productRepo.GetAll(includeProperties: "Category,SubCategory"); // No spaces in the "includeProperties:" string, everything will break.
+
             #endregion
 
             return View(productList);
@@ -51,31 +59,43 @@ namespace ProjectStone.Controllers
         // GET - Upsert (Null for Create, int val for Edit)
         public IActionResult Upsert(int? id)
         {
+            #region Before Repo Pattern
+
+            //var productViewModel = new ProductViewModel
+            //{
+            //    Product = new Product(),
+            //    CategorySelectList = _db.Category.Select(i => new SelectListItem
+            //    {
+            //        Text = i.Name,
+            //        Value = i.Id.ToString()
+            //    }),
+            //    SubCategorySelectList = _db.SubCategory.Select(i => new SelectListItem
+            //    {
+            //        Text = i.Name,
+            //        Value = i.Id.ToString()
+            //    })
+            //};
+
+            #endregion
+
+            // Use new method from ProductRepository. Two for the price of one.
             var productViewModel = new ProductViewModel
             {
                 Product = new Product(),
-                CategorySelectList = _db.Category.Select(i => new SelectListItem
-                {
-                    Text = i.Name,
-                    Value = i.Id.ToString()
-                }),
-                SubCategorySelectList = _db.SubCategory.Select(i => new SelectListItem
-                {
-                    Text = i.Name,
-                    Value = i.Id.ToString()
-                })
+                CategorySelectList = _productRepo.GetAllDropdownList(WebConstants.CategoryName),
+                SubCategorySelectList = _productRepo.GetAllDropdownList(WebConstants.SubCategoryName)
             };
 
-            if (id is null)
+            if (id == null)
             {
                 // To create a product.
                 return View(productViewModel);
             }
 
             // To edit a product.
-            productViewModel.Product = _db.Product.Find(id);
+            productViewModel.Product = _productRepo.Find(id.GetValueOrDefault());
 
-            if (productViewModel.Product is null) { return NotFound(); }
+            if (productViewModel.Product == null) { return NotFound(); }
 
             return View(productViewModel);
         }
@@ -104,13 +124,17 @@ namespace ProjectStone.Controllers
                     productViewModel.Product.Image = fileName + extension;
 
                     // Add the product.
-                    _db.Product.Add(productViewModel.Product);
+                    _productRepo.Add(productViewModel.Product);
                 }
                 else
                 {
                     // Updating.
                     // AsNoTracking will tell EF not to track this entity to allow us to update the product if the image was not updated.
-                    var productFromDb = _db.Product.AsNoTracking().FirstOrDefault(u => u.Id == productViewModel.Product.Id);
+                    // Pre Repo Pattern.
+                    //var productFromDb = _db.Product.AsNoTracking().FirstOrDefault(u => u.Id == productViewModel.Product.Id);
+
+                    // Using Repo Pattern.
+                    var productFromDb = _productRepo.FirstOrDefault(u => u.Id == productViewModel.Product.Id, isTracking: false);
 
                     if (files.Count > 0)
                     {
@@ -135,27 +159,20 @@ namespace ProjectStone.Controllers
                     }
 
                     // Update the product.
-                    _db.Product.Update(productViewModel.Product);
+                    _productRepo.Update(productViewModel.Product);
                 }
 
                 // Save to DB.
-                _db.SaveChanges();
+                _productRepo.Save();
+                TempData[WebConstants.Success] = "Action completed successfully!";
 
                 return RedirectToAction("Index");
             }
 
             // To prevent any weird happenstances if the modelState is not valid, populate the CategoryList.
-            productViewModel.CategorySelectList = _db.Category.Select(i => new SelectListItem
-            {
-                Text = i.Name,
-                Value = i.Id.ToString()
-            });
-            
-            productViewModel.SubCategorySelectList = _db.SubCategory.Select(i => new SelectListItem
-            {
-                Text = i.Name,
-                Value = i.Id.ToString()
-            });
+            productViewModel.CategorySelectList = _productRepo.GetAllDropdownList(WebConstants.CategoryName);
+            productViewModel.SubCategorySelectList = _productRepo.GetAllDropdownList(WebConstants.SubCategoryName);
+            TempData[WebConstants.Error] = "Error performing upsert action.";
 
             return View(productViewModel);
         }
@@ -166,24 +183,29 @@ namespace ProjectStone.Controllers
             if (id is null or 0) { return NotFound(); }
 
             // "Include" category dropdown value when looking for product. (Eager loading)
-            var productFromDb = _db.Product.Include(u => u.Category).Include(u => u.SubCategory).FirstOrDefault(u => u.Id == id);
+            // Old.
+            //var productFromDb = _db.Product.Include(u => u.Category).Include(u => u.SubCategory).FirstOrDefault(u => u.Id == id);
 
-            if (productFromDb is null) { return NotFound(); }
+            // New.
+            var productFromDb = _productRepo.FirstOrDefault(u => u.Id == id, "Category,SubCategory"); // "includeProperties:" was marked as redundant, so we will remove it from this line.
+
+            if (productFromDb == null) { return NotFound(); }
 
             return View(productFromDb);
         }
 
         // POST - Delete
         // ActionName = Custom action name to let .NetCore know this is a Delete Action as well.
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
             // Deleting.
 
-            var productObj = _db.Product.Find(id);
+            var productObj = _productRepo.Find(id.GetValueOrDefault());
 
-            if (productObj is null) { NotFound(); }
+            if (productObj == null) { NotFound(); }
 
             var uploadPath = _webHostEnvironment.WebRootPath + WebConstants.ImagePath;
 
@@ -192,9 +214,9 @@ namespace ProjectStone.Controllers
             // Delete old image to make way for new one.
             if (System.IO.File.Exists(oldFile)) { System.IO.File.Delete(oldFile); }
 
-            _db.Product.Remove(productObj);
-
-            _db.SaveChanges();
+            _productRepo.Remove(productObj);
+            _productRepo.Save();
+            TempData[WebConstants.Success] = "Action completed successfully!";
 
             return RedirectToAction("Index");
         }

@@ -1,35 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ProjectStone.Models;
-using System;
+using ProjectStone_DataAccess.Repository.IRepository;
+using ProjectStone_Models;
+using ProjectStone_Models.ViewModels;
+using ProjectStone_Utility;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ProjectStone.Data;
-using ProjectStone.Models.ViewModels;
-using ProjectStone.Utility;
 
 namespace ProjectStone.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _db;
+        private readonly IProductRepository _productRepo;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
+        public HomeController(ILogger<HomeController> logger, IProductRepository productRepo, ICategoryRepository categoryRepo)
         {
             _logger = logger;
-            _db = db;
+            _productRepo = productRepo;
+            _categoryRepo = categoryRepo;
         }
 
         public IActionResult Index()
         {
             var homeViewModel = new HomeViewModel
             {
-                Products = _db.Product.Include(u => u.Category).Include(u => u.SubCategory),
-                Categories = _db.Category
+                Products = _productRepo.GetAll(includeProperties: "Category,SubCategory"),
+                Categories = _categoryRepo.GetAll()
             };
 
             return View(homeViewModel);
@@ -46,7 +45,7 @@ namespace ProjectStone.Controllers
 
             var detailsViewModel = new DetailsViewModel
             {
-                Product = _db.Product.Include(u => u.Category).Include(u => u.SubCategory).FirstOrDefault(u => u.Id == id),
+                Product = _productRepo.FirstOrDefault(u => u.Id == id, "Category,SubCategory"),
                 IsInCart = false
             };
 
@@ -60,7 +59,7 @@ namespace ProjectStone.Controllers
 
         [HttpPost]
         [ActionName("Details")]
-        public IActionResult DetailsPost(int id)
+        public IActionResult DetailsPost(int id, DetailsViewModel detailsViewModel)
         {
             var shoppingCartList = new List<ShoppingCart>();
 
@@ -72,10 +71,16 @@ namespace ProjectStone.Controllers
             }
 
             // Add item to shopping cart.
-            shoppingCartList.Add(new ShoppingCart { ProductId = id });
+            shoppingCartList.Add(new ShoppingCart
+            {
+                ProductId = id,
+                SqFt = detailsViewModel.Product.TempSqFt
+            });
 
             // Set Session.
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+
+            TempData[WebConstants.Success] = "Item added to cart.";
 
             // Using nameof() instead of magic strings to prevent url mix-ups, e.g; "Index"
             return RedirectToAction(nameof(Index));
@@ -92,13 +97,12 @@ namespace ProjectStone.Controllers
             // Using LINQ, get the item to remove.
             var itemToRemove = shoppingCartList.SingleOrDefault(r => r.ProductId == id);
 
-            if (itemToRemove is not null)
-            {
-                shoppingCartList.Remove(itemToRemove);
-            }
-            
+            if (itemToRemove is not null) { shoppingCartList.Remove(itemToRemove); }
+
             // Set the session again, this time, with the new list.
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+            TempData[WebConstants.Success] = "Item removed from cart.";
+
             return RedirectToAction(nameof(Index));
         }
 

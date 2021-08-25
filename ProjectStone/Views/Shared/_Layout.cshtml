@@ -1,49 +1,81 @@
 ﻿@* To include Sessions, we must inject the services *@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor _httpContextAccessor
-@* Add Utilities as well *@
-@using ProjectStone.Utility
+@* Add Utilities as well (add this to _ViewImports.cshtml later) *@
+@using ProjectStone_Utility
 
 <!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - ProjectStone</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/site.css"/>
-    <link rel="stylesheet" href="~/fontawesome/css/all.min.css"/>
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>@ViewData["Title"] - Stone Pavers</title>
+    <meta content="Project Stone: Stone Pavers" name="description">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet"/>
+    <link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" rel="stylesheet"/>
+    <link href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" rel="stylesheet"/>
+    <link href="~/fontawesome/css/all.min.css" rel="stylesheet"/>
+    <link href="https://cdn.syncfusion.com/ej2/material.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+
 </head>
 <body>
+<!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
         <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ProjectStone</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+            <a asp-action="Index" asp-area="" asp-controller="Home" class="navbar-brand">
+                <img alt="LogoImage" src="~/imgs/tile.png" style="width: 40%;"/>
+            </a>
+            <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target=".navbar-collapse"
+                    data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                            <i class="fas fa-home"></i>
+                        <a asp-action="Index" asp-area="" asp-controller="Home" class="nav-link">
+                            @*<i class="fas fa-home"></i>*@
+                            Home
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Content Management
-                        </a>
-                        <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                            <a class="nav-link" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
-                            <a class="nav-link" asp-area="" asp-controller="SubCategory" asp-action="Index">Sub-Category</a>
-                            <a class="nav-link" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
-                            <div class="dropdown-divider"></div>
-                        </div>
-                    </li>
+                    @if (User.IsInRole(WebConstants.AdminRole))
+                    {
+                        <li class="nav-item dropdown">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="contentMgmtDropdown" role="button">
+                                Content Management
+                            </a>
+                            <div aria-labelledby="contentMgmtDropdown" class="dropdown-menu dropdown-menu-dark">
+                                <a asp-action="Index" asp-area="" asp-controller="Category" class="dropdown-item">Category</a>
+                                <a asp-action="Index" asp-area="" asp-controller="SubCategory" class="dropdown-item">Sub-Category</a>
+                                <a asp-action="Index" asp-area="" asp-controller="Product" class="dropdown-item">Product</a>
+                                <div class="dropdown-divider"></div>
+                                <a asp-area="Identity" asp-page="/Account/Register" class="dropdown-item">Create Admin User</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="orderMgmtDropdown" role="button">
+                                Order/Inquiry Management
+                            </a>
+                            <div aria-labelledby="orderMgmtDropdown" class="dropdown-menu dropdown-menu-dark">
+                                <a asp-action="Index" asp-area="" asp-controller="Inquiry" class="dropdown-item">Inquiry</a>
+                            </div>
+                        </li>
+                    }
+                </ul>
+                @* Login Partial *@
+                <partial name="_LoginPartial"/>
+                @* Cart *@
+                <ul class="navbar-nav">
                     <li>
-                        @if (_httpContextAccessor.HttpContext?.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart) != null)
+                        @if (_httpContextAccessor.HttpContext?.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart) is not null)
                         {
                             <a asp-action="Index" asp-controller="Cart" class="nav-link">
                                 @{
@@ -54,7 +86,7 @@
                         }
                         else
                         {
-                            <a href="#" class="nav-link">
+                            <a class="nav-link" href="#">
                                 <i class="fas fa-shopping-cart"></i> &nbsp; (0)
                             </a>
                         }
@@ -65,21 +97,28 @@
     </nav>
 </header>
 <div class="container">
-    <main role="main" class="pb-3">
+    <main class="pb-3" role="main">
+        @* To use the newly added Toastr notifications throughout the site, include the partial view that includes the feature here *@
+        <partial name="_Notifications"/>
         @RenderBody()
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
-  <div class="container">
-    &copy; @DateTime.Now.Year - ProjectStone - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-  </div>
+<footer class="border-top footer bg-dark">
+    <div class="container text-white-50">
+        &copy; @DateTime.Now.Year - Stone Pavers @*- <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>*@
+    </div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script asp-append-version="true" src="~/js/site.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script crossorigin="anonymous" integrity="sha512-XLo6bQe08irJObCc86rFEKQdcFYbGGIHVXcfMsxpbvF8ompmd1SNJjqVY5hmjQ01Ts0UmmSQGfqpt3fGjm6pGA==" referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

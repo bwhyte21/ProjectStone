@@ -1,0 +1,138 @@
+﻿@using ProjectStone_Utility
+@using System.Linq
+@model IList<Product>
+
+@if (Model.Any())
+{
+    <form method="post">
+        <br/>
+        <div class="backgroundWhiteBorder">
+            <div class="container row">
+                <div class="col -8">
+                    <div class="card mt-4">
+                        <div class="card-header bg-dark text-light ms-0 row container">
+                            <div class="col-6">
+                                <i class="fa fa-shopping-cart"></i> &nbsp;
+                                Shopping Cart
+                            </div>
+                            <div class="col-6 text-end">
+                                <a asp-action="Clear" class="btn btn-outline-warning btn-sm">Clear Cart</a>
+                                <a asp-action="Index" asp-controller="Home" class="btn btn-outline-info btn-sm">Continue Shopping</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class=" d-none d-lg-block">
+                                <div class="row" style="color: #821f3d">
+                                    <div class="col-lg-2">
+                                    </div>
+                                    @if (User.IsInRole(WebConstants.AdminRole))
+                                    {
+                                        <div class="col-12 col-lg-3">
+                                            Product Details
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-12 col-lg-7">
+                                            Product Details
+                                        </div>
+                                    }
+                                    <div class="col-12 col-lg-2">
+                                        Price per sqft
+                                    </div>
+                                    @if (User.IsInRole(WebConstants.AdminRole))
+                                    {
+                                        <div class="col-6 col-lg-2" id="sqFtTh">
+                                            SqFt
+                                        </div>
+                                        <div class="col-6 col-lg-2">
+                                            Total Price
+                                        </div>
+                                    }
+                                    <div class="col-6 col-sm-4 col-lg-1">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                            @{
+                                var orderTotal = 0.0;
+                                var totalPrice = 0.0;
+                            }
+                            @for (var i = 0; i < Model.Count(); i++)
+                            {
+                                <input asp-for="@Model[i].Id" hidden/>
+                                <div class="row h-100">
+                                    <div class="col-4 col-md-2 text-center py-2">
+                                        <img alt="Product Image" class="rounded" src="@WebConstants.ImagePath@Model[i].Image" style="width: 100%;"/>
+                                    </div>
+                                    @if (User.IsInRole(WebConstants.AdminRole))
+                                    {
+                                        <div class="col-8 col-lg-3">
+                                            <h5>@Model[i].Name</h5>
+                                            <div style="font-size: 11px;">@Model[i].ShortDesc</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-8 col-lg-7">
+                                            <h5>@Model[i].Name</h5>
+                                            <div style="font-size: 11px;">@Model[i].ShortDesc</div>
+                                        </div>
+                                    }
+                                    <div class="col-3 col-lg-2 pt-lg-4" style="font-size: 11px;">
+                                        <span style="font-size: 17px;"> @Model[i].Price.ToString("C") </span>/ sqft
+                                    </div>
+                                    @if (User.IsInRole(WebConstants.AdminRole))
+                                    {
+                                        totalPrice = Model[i].Price * Model[i].TempSqFt;
+                                        <div class="col-4 col-lg-2 pt-lg-4" style="font-size: 11px;">
+                                            <input aria-labelledby="sqFtTh" asp-for="@Model[i].TempSqFt" class="form-control" id="cartItem_@Model[i].Id" type="number"/>
+                                        </div>
+                                        <div class="col-3 col-lg-2 pt-lg-4" style="font-size: 11px;">
+                                            <span style="font-size: 17px;"> @totalPrice.ToString("C") </span>/ sqft
+                                        </div>
+                                    }
+                                    <div class="col-2 col-lg-1 p-0 pt-lg-4 text-center">
+                                        <a asp-action="Remove" asp-route-id="@Model[i].Id" class="btn btn-outline-danger" title="remove item">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                orderTotal += totalPrice;
+                                <hr/>
+                            }
+                            @if (User.IsInRole(WebConstants.AdminRole))
+                            {
+                                <div class="row" id="orderTotal">
+                                    <div class="col-12 text-end pe-4" style="color: #821F3D;">
+                                        @* Use string interpolation to display the total with currency format *@
+                                        Order Total : @($"{orderTotal:c}")
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <div class="row justify-content-end">
+                                <div class="col-6 col-md-3">
+                                    @if (User.IsInRole(WebConstants.AdminRole))
+                                    {
+                                        <input asp-action="UpdateCart" class="btn btn-info form-control" formmethod="post" name="Update" type="submit" value="Update Cart"/>
+                                    }
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button class="btn btn-success form-control " type="submit">
+                                        <span>Continue</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+else
+{
+    <p>Your shopping cart is empty... <i class="far fa-grimace"></i></p>
+}

@@ -1,116 +1,117 @@
-﻿@model ProjectStone.Models.ViewModels.ProductViewModel
+﻿@using ProjectStone_Utility
+@model ProjectStone_Models.ViewModels.ProductViewModel
 
 @{
     var title = "Create Product";
 }
 
 @* Add the enctype for images to work with this *@
-<form method="post" asp-action="Upsert" enctype="multipart/form-data">
-    @if (Model.Product.Id != 0)
+<form asp-action="Upsert" enctype="multipart/form-data" method="post">
+    @if (Model.Product.Id is not 0)
     {
         title = "Edit Product";
         <input asp-for="Product.Id" hidden/>
     }
-    <div class="border p-3">
+    <div class="border p-3 bg-white">
         <div class="form-group row">
-            <h2 class="text-info pl-3">@title</h2>
+            <h2 class="text-info ps-3">@title</h2>
         </div>
         <div class="row">
-          <div class="col-8">
-            <div class="form-group row">
-              <div class="col-4">
-                <label asp-for="Product.Name"></label>
-              </div>
-              <div class="col-8">
-                <input asp-for="Product.Name" class="form-control" />
-                <span asp-validation-for="Product.Name" class="text-danger"></span>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-4">
-                <label asp-for="Product.Price"></label>
-              </div>
-              <div class="col-8">
-                <input asp-for="Product.Price" class="form-control" />
-                <span asp-validation-for="Product.Price" class="text-danger"></span>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-4">
-                <label asp-for="Product.ShortDesc"></label>
-              </div>
-              <div class="col-8">
-                <input asp-for="Product.ShortDesc" class="form-control" />
-                <span asp-validation-for="Product.ShortDesc" class="text-danger"></span>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-4">
-                <label asp-for="Product.Description"></label>
-              </div>
-              <div class="col-8">
-                <textarea asp-for="Product.Description" class="form-control summernote"></textarea>
-                <span asp-validation-for="Product.Description" class="text-danger"></span>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-4">
-                Image
-              </div>
-              <div class="col-8">
-                <input type="file" name="files" id="uploadBox" multiple class="form-control" />
-              </div>
-            </div>
-            @* Use ViewBag to pass data from controller to view. *@
-            <div class="form-group row">
-              <div class="col-4">
-                <label asp-for="Product.CategoryId"></label>
-              </div>
-              <div class="col-8">
-                <select asp-for="Product.CategoryId" asp-items="@Model.CategorySelectList" class="form-control">
-                  <option selected disabled>--Select Category--</option>
-                </select>
-                <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
-              </div>
-
-            </div>
-            <div class="form-group row">
-              <div class="col-4">
-                <label asp-for="Product.SubCategoryTypeId"></label>
-              </div>
-              <div class="col-8">
-                <select asp-for="Product.SubCategoryTypeId" asp-items="@Model.SubCategorySelectList" class="form-control">
-                  <option selected disabled>--Select SubCategory--</option>
-                </select>
-                <span asp-validation-for="Product.SubCategoryTypeId" class="text-danger"></span>
-              </div>
-
-            </div>
-            <div class="form-group row">
-              <div class="col-8 offset-4 row">
-
-                <div class="col">
-                  @if (Model.Product.Id != 0)
-                  {
-                    // update
-                    <input type="submit" value="Update" class="btn btn-info w-100" />
-                  }
-                  else
-                  {
-                    // create
-                    <input type="submit" value="Create" class="btn btn-info w-100" onclick="return validateInput();" />
-                  }
+            <div class="col-8">
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label asp-for="Product.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.Name" class="form-control"/>
+                        <span asp-validation-for="Product.Name" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="col">
-                  <a asp-action="Index" class="btn btn-warning w-100"><i class="fas fa-sign-out-alt"></i> &nbsp; Back</a>
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label asp-for="Product.Price"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.Price" class="form-control"/>
+                        <span asp-validation-for="Product.Price" class="text-danger"></span>
+                    </div>
                 </div>
-              </div>
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label asp-for="Product.ShortDesc"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.ShortDesc" class="form-control"/>
+                        <span asp-validation-for="Product.ShortDesc" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label asp-for="Product.Description"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea asp-for="Product.Description" class="form-control summernote"></textarea>
+                        <span asp-validation-for="Product.Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        Image
+                    </div>
+                    <div class="col-8">
+                        <input class="form-control" id="uploadBox" multiple name="files" type="file"/>
+                    </div>
+                </div>
+                @* Use ViewBag to pass data from controller to view. *@
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label asp-for="Product.CategoryId"></label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="Product.CategoryId" asp-items="@Model.CategorySelectList" class="form-select">
+                            <option disabled selected>--Select Category--</option>
+                        </select>
+                        <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label asp-for="Product.SubCategoryTypeId"></label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="Product.SubCategoryTypeId" asp-items="@Model.SubCategorySelectList" class="form-select">
+                            <option disabled selected>--Select SubCategory--</option>
+                        </select>
+                        <span asp-validation-for="Product.SubCategoryTypeId" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="form-group row py-2">
+                    <div class="col-8 offset-4 row">
+
+                        <div class="col">
+                            @if (Model.Product.Id is not 0)
+                            {
+                                // update
+                                <input class="btn btn-info w-100" type="submit" value="Update"/>
+                            }
+                            else
+                            {
+                                // create
+                                <input class="btn btn-info w-100" onclick="return validateInput();" type="submit" value="Create"/>
+                            }
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-warning w-100"><i class="fas fa-sign-out-alt"></i> &nbsp; Back</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
             <div class="col-4">
-                @if (Model.Product.Id != 0)
+                @if (Model.Product.Id is not 0)
                 {
-                    <img src="@WebConstants.ImagePath@Model.Product.Image" style="width: 100%; border-radius: 5px; border: 1px solid gray;" alt="Product Image"/>
+                    <img alt="Product Image" src="@WebConstants.ImagePath@Model.Product.Image" style="width: 100%; border-radius: 5px; border: 1px solid gray;"/>
                 }
             </div>
         </div>
@@ -118,13 +119,19 @@
 </form>
 
 @section Scripts{
-    @{
     <partial name="_ValidationScriptsPartial"/>
-    }
     <script>
         $(document).ready(function() {
             $('.summernote').summernote({
-                height: 250
+                height: 250,
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontSize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']]
+                ]
             });
         });
 

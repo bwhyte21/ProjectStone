@@ -1,0 +1,204 @@
+﻿@using ProjectStone_Utility
+@model ProjectStone_Models.ViewModels.ProductUserViewModel
+
+<form id="payment-form" method="post">
+    <br/>
+    <div class="backgroundWhiteBorder">
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-dark text-light ms-0 row container">
+                    <div class="col-6">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;
+                        Order Summary
+                    </div>
+                    <div class="col-6 text-end">
+                        <a asp-action="Index" class="btn btn-outline-info btn-sm">Back to Cart</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container rounded p-2">
+                        <div class="row">
+                            <div class="col-12 col-lg-7 pb-4">
+                                <div class="row">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-info">User Details:</span>
+                                    </h4>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Name</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="ApplicationUser.FullName" class="form-control" required type="text"/>
+                                        <span asp-validation-for="ApplicationUser.FullName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Phone</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="ApplicationUser.PhoneNumber" class="form-control" required type="text"/>
+                                        <span asp-validation-for="ApplicationUser.PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Email</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="ApplicationUser.Email" class="form-control" required type="text"/>
+                                        <span asp-validation-for="ApplicationUser.Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                @if (User.IsInRole(WebConstants.AdminRole))
+                                {
+                                    <div class="row my-1">
+                                        <div class="col-3">
+                                            <label>Address</label>
+                                        </div>
+                                        <div class="col-9">
+                                            <input asp-for="ApplicationUser.Address" class="form-control" type="text"/>
+                                            <span asp-validation-for="ApplicationUser.Address" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-3">
+                                            <label>City</label>
+                                        </div>
+                                        <div class="col-9">
+                                            <input asp-for="ApplicationUser.City" class="form-control" type="text"/>
+                                            <span asp-validation-for="ApplicationUser.City" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-3">
+                                            <label>State</label>
+                                        </div>
+                                        <div class="col-9">
+                                            <input asp-for="ApplicationUser.State" class="form-control" type="text"/>
+                                            <span asp-validation-for="ApplicationUser.State" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-3">
+                                            <label>Postal Code</label>
+                                        </div>
+                                        <div class="col-9">
+                                            <input asp-for="ApplicationUser.PostalCode" class="form-control" type="text"/>
+                                            <span asp-validation-for="ApplicationUser.PostalCode" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                            <div class="col-12 col-lg-5 row">
+                                <div class="col-12">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-info">Summary:</span>
+                                    </h4>
+                                    <ul class="list-group mb-3">
+                                        @* Setup variable for order value capture *@
+                                        @{ var orderTotal = 0.0; }
+                                        @* We use for-loop instead of foreach because the foreach does not capture all the data properly. *@
+                                        @for (var i = 0; i < Model.ProductList.Count(); i++)
+                                        {
+                                            <input asp-for="@Model.ProductList[i].Id" type="hidden"/>
+                                            <input asp-for="@Model.ProductList[i].Name" type="hidden"/>
+                                            <input asp-for="@Model.ProductList[i].Price" type="hidden"/>
+                                            <input asp-for="@Model.ProductList[i].TempSqFt" type="hidden"/>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <div>
+                                                    <h6 class="my-0">@Model.ProductList[i].Name</h6>
+                                                    @if (User.IsInRole(WebConstants.AdminRole))
+                                                    {
+                                                        <small class="text-muted">Sqft: @(Model.ProductList[i].TempSqFt)</small>
+                                                    }
+                                                    else
+                                                    {
+                                                        <small class="text-muted">Price per Sqft: @(Model.ProductList[i].Price.ToString("C"))</small>
+                                                    }
+                                                </div>
+                                                @if (User.IsInRole(WebConstants.AdminRole))
+                                                {
+                                                    <span class="text-muted">@((Model.ProductList[i].Price * Model.ProductList[i].TempSqFt).ToString("C"))</span>
+                                                }
+                                            </li>
+                                            orderTotal += Model.ProductList[i].Price * Model.ProductList[i].TempSqFt;
+                                        }
+                                        @if (User.IsInRole(WebConstants.AdminRole))
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between bg-light">
+                                                <small class="text-info"> Total (USD)</small>
+                                                <strong class="text-info">@orderTotal.ToString("C")</strong>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                                @if (User.IsInRole(WebConstants.AdminRole))
+                                {
+                                    /* We only want this transaction if the user is an admin. */
+                                    <div class="col-12">
+                                        <div class="container">
+                                            <div id="dropin-container"></div>
+                                            @* Grab the nonce val from here via JS to add it to the post method *@
+                                            <input id="nonce" name="payment_method_nonce" type="hidden"/>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 col-md-5 offset-md-7">
+                            @if (User.IsInRole(WebConstants.AdminRole))
+                            {
+                                <button class="btn btn-success form-control" id="submitOrderBtn" type="submit">Submit Order</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary form-control" type="submit">Submit Inquiry</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"/>
+
+    <script src="https://js.braintreegateway.com/web/dropin/1.31.2/js/dropin.min.js"></script>
+    <script>
+        // ToDo later: separate any scripts into their own JS file for organizational purposes.
+
+        // Retrieve client token from ViewBag.
+        var clientToken = "@ViewBag.ClientToken";
+
+        // Set to form instead of button (example: https://developer.paypal.com/braintree/docs/start/drop-in)
+        var form = document.querySelector('#payment-form');
+
+        braintree.dropin.create({
+            authorization: clientToken, // 'CLIENT_TOKEN_FROM_SERVER'
+            selector: '#dropin-container'
+        }, function(err, instance) {
+            form.addEventListener('submit', function() {
+                // Prevent the form from being posted automatically to the SummaryPost action method.
+                event.preventDefault();
+
+                // Add the nonce to the form, then submit.
+                instance.requestPaymentMethod(function(err, payload) {
+                    // Submit payload.nonce to your server
+                    document.querySelector('#nonce').value = payload.nonce;
+                    // Now submit the form.
+                    form.submit();
+                });
+            });
+        });
+    </script>
+}

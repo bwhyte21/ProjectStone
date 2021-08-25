@@ -1,43 +1,37 @@
-﻿@model ProjectStone.Models.ViewModels.HomeViewModel
+﻿@model ProjectStone_Models.ViewModels.HomeViewModel
 
 <div class="container">
-  <div class="text-center">
-    <button class="btn btn-dark filter-button" data-filter="all">All</button>
-      @foreach (var cat in Model.Categories)
-      {
-        <button class="btn btn-outline-secondary filter-button" data-filter="@cat.Name.Replace(' ','_')">@cat.Name</button>
-      }
-  </div>
-  <br />
-  <div class="row">
-      @foreach (var prod in Model.Products)
-      {
-          // Display all products using partial view (for reusability)
-          <partial name="_IndividualProductCard" model="prod" />
-      }
-  </div>
+    <div class="text-center">
+        <button class="btn btn-dark filter-button" data-filter="all">All</button>
+        @foreach (var cat in Model.Categories)
+        {
+            <button class="btn btn-outline-secondary filter-button" data-filter="@cat.Name.Replace(' ', '_')">@cat.Name</button>
+        }
+    </div>
+    <br/>
+    <div class="row">
+        @foreach (var prod in Model.Products)
+        {
+            // Display all products using partial view (for reusability)
+            <partial model="prod" name="_IndividualProductCard"/>
+        }
+    </div>
 </div>
 
 @section Scripts
 {
     <script>
-        $(document).ready(function(){
-
-            $(".filter-button").click(function(){
-
+        $(document).ready(function() {
+            $(".filter-button").click(function() {
                 var value = $(this).attr('data-filter');
-                if(value == "all")
-                {
+                if (value == "all") {
                     $('.filter').show('1000');
-                }
-                else
-                {
-                    $(".filter").not('.'+value).hide('3000');
-                    $('.filter').filter('.'+value).show('3000');
-            
+                } else {
+                    $(".filter").not('.' + value).hide('3000');
+                    $('.filter').filter('.' + value).show('3000');
+
                 }
             });
-
         });
     </script>
 }

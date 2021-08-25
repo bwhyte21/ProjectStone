@@ -1,15 +1,15 @@
-﻿@model ProjectStone.Models.SubCategory
+﻿@model ProjectStone_Models.SubCategory
 
-<form method="post" asp-action="DeletePost">
+<form asp-action="DeletePost" method="post">
     @* Grab the Id when we post it *@
-    <input asp-for="Id" hidden />
-    <div class="border p-3">
+    <input asp-for="Id" hidden/>
+    <div class="border p-3 bg-white">
         <div class="form-group row">
-            <h2 class="text-info pl-3">Delete Sub-Category</h2>
+            <h2 class="text-info ps-3">Delete Sub-Category</h2>
         </div>
         <div class="row">
             <div class="col-8">
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-4">
                         <label asp-for="Name"></label>
                     </div>
@@ -18,11 +18,11 @@
                     </div>
 
                 </div>
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-8 offset-4 row">
 
                         <div class="col">
-                            <input type="submit" value="Delete" class="btn btn-danger w-100" />
+                            <input class="btn btn-danger w-100" type="submit" value="Delete"/>
                         </div>
                         <div class="col">
                             <a asp-action="Index" class="btn btn-warning w-100"><i class="fas fa-sign-out-alt"></i> &nbsp; Back</a>

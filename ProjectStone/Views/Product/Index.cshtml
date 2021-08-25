@@ -1,14 +1,14 @@
-﻿@model IEnumerable<ProjectStone.Models.Product>
+﻿@model IEnumerable<ProjectStone_Models.Product>
 @{
     ViewData["Title"] = "Categories";
 }
 
-<div class="container p-3">
+<div class="container p-3 bg-white">
     <div class="row pt-2">
         <div class="col-6">
             <h2 class="text-primary">Product List</h2>
         </div>
-        <div class="col-6 text-right">
+        <div class="col-6 text-end">
             @* Use tag helpers to redirect to the Create action *@
             <a asp-action="Upsert" class="btn btn-info">
                 <i class="fas fa-plus"></i>&nbsp; Create New Product
@@ -41,11 +41,11 @@
                     <td class="text-center">
                         <div class="w-100 btn-group" role="group">
                             @* Upsert = responsible for creating a product and updating a product *@
-                            <a  asp-route-Id="@obj.Id" asp-action="Upsert" class="btn btn-success mx-2 ">
+                            <a asp-action="Upsert" asp-route-Id="@obj.Id" class="btn btn-success mx-2 ">
                                 <i class="far fa-edit"></i>
                             </a>
                             @* Pass in model obj identifier of category to delete the desired item from the table via asp-route-[paramName] tag helper *@
-                            <a  asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-danger mx-2">
+                            <a asp-action="Delete" asp-route-Id="@obj.Id" class="btn btn-danger mx-2">
                                 <i class="far fa-trash-alt"></i>
                             </a>
                         </div>

@@ -1,24 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ProjectStone.Data;
-using ProjectStone.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using ProjectStone_DataAccess.Repository.IRepository;
+using ProjectStone_Models;
+using ProjectStone_Utility;
 
 namespace ProjectStone.Controllers
 {
+  [Authorize(Roles = WebConstants.AdminRole)]
     public class SubCategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly ISubCategoryRepository _subCategoryRepo;
 
-        public SubCategoryController(ApplicationDbContext db)
+        public SubCategoryController(ISubCategoryRepository subCategoryRepo)
         {
-            _db = db;
+            _subCategoryRepo = subCategoryRepo;
         }
         public IActionResult Index()
         {
-            var subCategoryList = _db.SubCategory;
+            var subCategoryList = _subCategoryRepo.GetAll();
             return View(subCategoryList);
         }
 
@@ -31,16 +30,19 @@ namespace ProjectStone.Controllers
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(SubCategory obj)
+        public IActionResult Create(SubCategory subCategoryObj)
         {
             if (ModelState.IsValid)
             {
-                _db.SubCategory.Add(obj);
-                _db.SaveChanges();
+                _subCategoryRepo.Add(subCategoryObj);
+                _subCategoryRepo.Save();
+                TempData[WebConstants.Success] = "SubCategory created successfully!";
                 return Redirect("Index");
             }
+            
+            TempData[WebConstants.Error] = "Error creating SubCategory.";
 
-            return View(obj);
+            return View(subCategoryObj);
         }
 
         // GET - Edit
@@ -49,26 +51,29 @@ namespace ProjectStone.Controllers
             if (id is null or 0) { return NotFound(); }
 
             // Find only works on primary key.
-            var obj = _db.SubCategory.Find(id);
-            if (obj is null) { return NotFound(); }
+            var subCategoryObj = _subCategoryRepo.Find(id.GetValueOrDefault());
+            if (subCategoryObj == null) { return NotFound(); }
 
-            return View(obj);
+            return View(subCategoryObj);
         }
 
         // POST - Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(SubCategory obj)
+        public IActionResult Edit(SubCategory subCategoryObj)
         {
             if (ModelState.IsValid)
             {
-                _db.SubCategory.Update(obj);
-                _db.SaveChanges();
+                _subCategoryRepo.Update(subCategoryObj);
+                _subCategoryRepo.Save();
+                TempData[WebConstants.Success] = "SubCategory modified successfully!";
 
                 return RedirectToAction("Index");
             }
 
-            return View(obj);
+            TempData[WebConstants.Error] = "Error modifying SubCategory.";
+
+            return View(subCategoryObj);
         }
 
         // GET - Delete
@@ -76,10 +81,10 @@ namespace ProjectStone.Controllers
         {
             if (id is null or 0) { return NotFound(); }
 
-            var obj = _db.SubCategory.Find(id);
-            if (obj is null) { return NotFound(); }
+            var subCategoryObj = _subCategoryRepo.Find(id.GetValueOrDefault());
+            if (subCategoryObj == null) { return NotFound(); }
 
-            return View(obj);
+            return View(subCategoryObj);
         }
 
         // POST - Delete
@@ -87,12 +92,13 @@ namespace ProjectStone.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var obj = _db.SubCategory.Find(id);
+            var subCategoryObj = _subCategoryRepo.Find(id.GetValueOrDefault());
             
-            if (obj is null) { NotFound(); }
+            if (subCategoryObj == null) { NotFound(); }
 
-            _db.SubCategory.Remove(obj);
-            _db.SaveChanges();
+            _subCategoryRepo.Remove(subCategoryObj);
+            _subCategoryRepo.Save();
+            TempData[WebConstants.Success] = "SubCategory deleted successfully!";
 
             return RedirectToAction("Index");
         }
