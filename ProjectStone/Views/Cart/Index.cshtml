@@ -16,6 +16,7 @@
                                 Shopping Cart
                             </div>
                             <div class="col-6 text-end">
+                                <a asp-action="Clear" class="btn btn-outline-warning btn-sm">Clear Cart</a>
                                 <a asp-action="Index" asp-controller="Home" class="btn btn-outline-info btn-sm">Continue Shopping</a>
                             </div>
                         </div>
@@ -41,7 +42,7 @@
                                     </div>
                                     @if (User.IsInRole(WebConstants.AdminRole))
                                     {
-                                        <div id="sqFtTh" class="col-6 col-lg-2">
+                                        <div class="col-6 col-lg-2" id="sqFtTh">
                                             SqFt
                                         </div>
                                         <div class="col-6 col-lg-2">
@@ -57,12 +58,12 @@
                                 var orderTotal = 0.0;
                                 var totalPrice = 0.0;
                             }
-                            @for (var i =0; i < Model.Count(); i++)
+                            @for (var i = 0; i < Model.Count(); i++)
                             {
-                                <input hidden asp-for="@Model[i].Id"/>
+                                <input asp-for="@Model[i].Id" hidden/>
                                 <div class="row h-100">
                                     <div class="col-4 col-md-2 text-center py-2">
-                                        <img src="@WebConstants.ImagePath@Model[i].Image" class="rounded" style="width: 100%;" alt="Product Image"/>
+                                        <img alt="Product Image" class="rounded" src="@WebConstants.ImagePath@Model[i].Image" style="width: 100%;"/>
                                     </div>
                                     @if (User.IsInRole(WebConstants.AdminRole))
                                     {
@@ -85,14 +86,14 @@
                                     {
                                         totalPrice = Model[i].Price * Model[i].TempSqFt;
                                         <div class="col-4 col-lg-2 pt-lg-4" style="font-size: 11px;">
-                                            <input id="cartItem_@Model[i].Id" type="number" asp-for="@Model[i].TempSqFt" class="form-control" aria-labelledby="sqFtTh"/>
+                                            <input aria-labelledby="sqFtTh" asp-for="@Model[i].TempSqFt" class="form-control" id="cartItem_@Model[i].Id" type="number"/>
                                         </div>
                                         <div class="col-3 col-lg-2 pt-lg-4" style="font-size: 11px;">
                                             <span style="font-size: 17px;"> @totalPrice.ToString("C") </span>/ sqft
                                         </div>
                                     }
                                     <div class="col-2 col-lg-1 p-0 pt-lg-4 text-center">
-                                        <a title="remove item" asp-action="Remove" asp-route-id="@Model[i].Id" class="btn btn-outline-danger">
+                                        <a asp-action="Remove" asp-route-id="@Model[i].Id" class="btn btn-outline-danger" title="remove item">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </div>
@@ -102,7 +103,7 @@
                             }
                             @if (User.IsInRole(WebConstants.AdminRole))
                             {
-                                <div id="orderTotal" class="row">
+                                <div class="row" id="orderTotal">
                                     <div class="col-12 text-end pe-4" style="color: #821F3D;">
                                         @* Use string interpolation to display the total with currency format *@
                                         Order Total : @($"{orderTotal:c}")
@@ -115,11 +116,11 @@
                                 <div class="col-6 col-md-3">
                                     @if (User.IsInRole(WebConstants.AdminRole))
                                     {
-                                        <input type="submit" asp-action="UpdateCart" formmethod="post" name="Update" value="Update Cart" class="btn btn-info form-control"/>
+                                        <input asp-action="UpdateCart" class="btn btn-info form-control" formmethod="post" name="Update" type="submit" value="Update Cart"/>
                                     }
                                 </div>
                                 <div class="col-6 col-md-3">
-                                    <button type="submit" class="btn btn-success form-control ">
+                                    <button class="btn btn-success form-control " type="submit">
                                         <span>Continue</span>
                                     </button>
                                 </div>

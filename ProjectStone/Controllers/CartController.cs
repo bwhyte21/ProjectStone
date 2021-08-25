@@ -13,6 +13,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using ProjectStone_Utility.BrainTree;
+using Braintree;
 
 namespace ProjectStone.Controllers
 {
@@ -28,13 +31,14 @@ namespace ProjectStone.Controllers
         private readonly IInquiryDetailRepository _inqDetailRepo;
         private readonly IOrderHeaderRepository _orderHeaderRepo;
         private readonly IOrderDetailRepository _orderDetailRepo;
+        private readonly IBrainTreeGate _brainTree;
 
         // Once it's bound in the post, it does not need to be explicitly defined in the action method's parameter. It will be available by default in the summary post.
         [BindProperty]
         public ProductUserViewModel ProductUserVm { get; set; }
 
         public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender, IApplicationUserRepository userRepo, IProductRepository productRepo,
-            IInquiryHeaderRepository inqHeaderRepo, IInquiryDetailRepository inqDetailRepo, IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo)
+            IInquiryHeaderRepository inqHeaderRepo, IInquiryDetailRepository inqDetailRepo, IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo, IBrainTreeGate brainTree)
         {
             // Immutable objects.
             _webHostEnvironment = webHostEnvironment;
@@ -45,6 +49,7 @@ namespace ProjectStone.Controllers
             _inqDetailRepo = inqDetailRepo;
             _orderHeaderRepo = orderHeaderRepo;
             _orderDetailRepo = orderDetailRepo;
+            _brainTree = brainTree;
         }
 
         public IActionResult Index()
@@ -130,6 +135,14 @@ namespace ProjectStone.Controllers
                     // This means the user is Admin User that wants to place an order for a customer.
                     appUser = new ApplicationUser();
                 }
+
+                // Get the BrainTree Gateway object.
+                var gateway = _brainTree.GetGateway();
+                // then generate a Client token from BrainTree..
+                var clientToken = gateway.ClientToken.Generate();
+                // save the client token in the ViewBag (ToDo: research another way to store this later.)
+                ViewBag.ClientToken = clientToken;
+
             }
             else // If not an admin user.
             {
@@ -154,6 +167,7 @@ namespace ProjectStone.Controllers
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart);
             }
 
+            // Old vars.
             //var prodInCart = shoppingCartList.Select(i => i.ProductId).ToList();
             //var prodList = _productRepo.GetAll(u => prodInCart.Contains(u.Id));
 
@@ -183,7 +197,7 @@ namespace ProjectStone.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
-        public async Task<IActionResult> SummaryPost(ProductUserViewModel productUserViewModel)
+        public async Task<IActionResult> SummaryPost(IFormCollection collection, ProductUserViewModel productUserViewModel)
         {
             // Capture App User Id.
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -245,6 +259,39 @@ namespace ProjectStone.Controllers
 
                 _orderDetailRepo.Save();
                 TempData[WebConstants.Success] = "Order submitted successfully!";
+
+                // Capture order collection and payment nonce for BrainTree.
+                var nonceFromTheClient = collection["payment_method_nonce"]; // name should match "payment_method_nonce" from Summary.cshtml.
+
+                // Create transaction.
+                var request = new TransactionRequest
+                {
+                    Amount = Convert.ToDecimal(orderHeader.FinalOrderTotal), // Gather amount from order total.
+                    PaymentMethodNonce = nonceFromTheClient,
+                    OrderId = orderHeader.Id.ToString(),
+                    Options = new TransactionOptionsRequest
+                    {
+                        SubmitForSettlement = true // Whatever transaction is happening, let braintree submit it for settlment.
+                    }
+                };
+
+                // Get the gateway again to make the transaction call.
+                var gateway = _brainTree.GetGateway();
+                var result = await gateway.Transaction.SaleAsync(request);
+
+                // Now update the order status accordingly.
+                if (result.Target.ProcessorResponseText == "Approved")
+                {
+                    orderHeader.TransactionId = result.Target.Id;
+                    orderHeader.OrderStatus = WebConstants.StatusApproved;
+                }
+                else
+                {
+                    orderHeader.OrderStatus = WebConstants.StatusCancelled;
+                }
+
+                // Save changes to Db.
+                _orderHeaderRepo.Save();
 
                 // Redirect to Inquiry Confirmation with OrderId attached.
                 return RedirectToAction(nameof(InquiryConfirmation), new { id = orderHeader.Id });
@@ -367,6 +414,15 @@ namespace ProjectStone.Controllers
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Clear()
+        {
+            // Clear the session to empty out the cart.
+            HttpContext.Session.Clear();
+
+            // Then redirect to home since the cart will be cleared out.
+            return RedirectToAction("Index","Home");
         }
     }
 }

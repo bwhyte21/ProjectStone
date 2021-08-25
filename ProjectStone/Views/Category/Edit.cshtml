@@ -1,8 +1,8 @@
 ﻿@model ProjectStone_Models.Category
 
-<form method="post" asp-action="Edit">
+<form asp-action="Edit" method="post">
     @* Grab the Id when we post it *@
-    <input asp-for="Id" hidden />
+    <input asp-for="Id" hidden/>
     <div class="border p-3 bg-white">
         <div class="form-group row">
             <h2 class="text-info ps-3">Edit Category</h2>
@@ -14,7 +14,7 @@
                         <label asp-for="Name"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Name" class="form-control" />
+                        <input asp-for="Name" class="form-control"/>
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
@@ -24,7 +24,7 @@
                         <label asp-for="DisplayOrder"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="DisplayOrder" class="form-control" />
+                        <input asp-for="DisplayOrder" class="form-control"/>
                         <span asp-validation-for="DisplayOrder" class="text-danger"></span>
                     </div>
 
@@ -33,7 +33,7 @@
                     <div class="col-8 offset-4 row">
 
                         <div class="col">
-                            <input type="submit" value="Update" class="btn btn-info w-100" />
+                            <input class="btn btn-info w-100" type="submit" value="Update"/>
                         </div>
                         <div class="col">
                             <a asp-action="Index" class="btn btn-warning w-100"><i class="fas fa-sign-out-alt"></i> &nbsp; Back</a>
@@ -48,7 +48,5 @@
 </form>
 
 @section Scripts{
-    @{
-                                     <partial name="_ValidationScriptsPartial"/>
-    }
+    <partial name="_ValidationScriptsPartial"/>
 }

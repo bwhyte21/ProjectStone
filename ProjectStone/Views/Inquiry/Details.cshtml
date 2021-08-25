@@ -1,7 +1,7 @@
 ﻿@model ProjectStone_Models.ViewModels.InquiryViewModel
 
 <form method="post">
-    <input hidden asp-for="InquiryHeader.Id"/>
+    <input asp-for="InquiryHeader.Id" hidden/>
     <br/>
     <div class="backgroundWhite container">
         <div class="card">
@@ -25,14 +25,14 @@
                             <div class="row my-1">
                                 <div class="col-3">Name</div>
                                 <div class="col-9">
-                                    <input asp-for="InquiryHeader.FullName" type="text" class="form-control"/>
+                                    <input asp-for="InquiryHeader.FullName" class="form-control" type="text"/>
                                     <span asp-validation-for="InquiryHeader.FullName" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="row my-1">
                                 <div class="col-3">Phone</div>
                                 <div class="col-9">
-                                    <input asp-for="InquiryHeader.PhoneNumber" type="text" class="form-control"/>
+                                    <input asp-for="InquiryHeader.PhoneNumber" class="form-control" type="text"/>
                                     <span asp-validation-for="InquiryHeader.PhoneNumber" class="text-danger"></span>
                                 </div>
                             </div>
@@ -40,14 +40,14 @@
                             <div class="row my-1">
                                 <div class="col-3">Email</div>
                                 <div class="col-9">
-                                    <input asp-for="InquiryHeader.Email" type="text" class="form-control"/>
+                                    <input asp-for="InquiryHeader.Email" class="form-control" type="text"/>
                                     <span asp-validation-for="InquiryHeader.Email" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="row my-1">
                                 <div class="col-3">Inquiry Date</div>
                                 <div class="col-9">
-                                    <input value="@Model.InquiryHeader.InquiryDate.ToShortDateString()" type="text" class="form-control" readonly/>
+                                    <input class="form-control" readonly type="text" value="@Model.InquiryHeader.InquiryDate.ToShortDateString()"/>
                                 </div>
                             </div>
 
@@ -56,12 +56,12 @@
                                     <div class="row">
                                         <div class="col">
                                             @* This submit action will go to Details (this page) *@
-                                            <input type="submit" value="Convert To Cart" class="btn btn-info form-control"/>
+                                            <input class="btn btn-info form-control" type="submit" value="Convert To Cart"/>
                                         </div>
 
                                         <div class="col">
                                             @* This submit will use formaction & formmethod to perform the Delete action with HttpPost *@
-                                            <input type="submit" value="Delete" class="btn btn-danger form-control" formaction="/Inquiry/Delete" formmethod="post"/>
+                                            <input class="btn btn-danger form-control" formaction="/Inquiry/Delete" formmethod="post" type="submit" value="Delete"/>
                                         </div>
                                     </div>
                                 </div>

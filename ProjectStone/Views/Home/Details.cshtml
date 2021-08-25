@@ -3,7 +3,7 @@
 
 <div class="">
     <form method="post">
-      <input asp-for="@Model.Product.Id" hidden />
+        <input asp-for="@Model.Product.Id" hidden/>
         <div class="container backgroundWhite pt-4">
             <div class="card" style="border: 1px solid #000000;">
                 <div class="card-header bg-dark text-light ms-0 row container" style="border-radius: 0px;">
@@ -18,7 +18,7 @@
                     <div class="container rounded p-2">
                         <div class="row">
                             <div class="col-12 col-lg-4 p-1 text-center">
-                                <img src="@WebConstants.ImagePath@Model.Product.Image" style="width: 100%;" class="rounded" alt="Product Image"/>
+                                <img alt="Product Image" class="rounded" src="@WebConstants.ImagePath@Model.Product.Image" style="width: 100%;"/>
                             </div>
                             <div class="col-12 col-lg-8">
                                 <div class="row ps-3">
@@ -30,23 +30,23 @@
 
                                         <p class="text-secondary">@Html.Raw(@Model.Product.Description)</p>
                                     </div>
-                                  @if (User.IsInRole(WebConstants.AdminRole))
-                                  {
-                                    <div class="col-12">
-                                    SqFt:
+                                    @if (User.IsInRole(WebConstants.AdminRole))
+                                    {
+                                        <div class="col-12">
+                                            SqFt:
                                         </div>
-                                    <div class="col-sm-12 col-md-3 col-lg-3">
-                                      @if (Model.IsInCart)
-                                      {
-                                        <input asp-for="@Model.Product.TempSqFt" class="form-control" disabled/>
-                                      }
-                                      else
-                                      {
-                                        <input asp-for="@Model.Product.TempSqFt" class="form-control"/>
-                                      }
-                                      <span asp-validation-for="@Model.Product.TempSqFt" class="text-danger"></span>
-                                    </div>
-                                  }
+                                        <div class="col-sm-12 col-md-3 col-lg-3">
+                                            @if (Model.IsInCart)
+                                            {
+                                                <input asp-for="@Model.Product.TempSqFt" class="form-control" disabled/>
+                                            }
+                                            else
+                                            {
+                                                <input asp-for="@Model.Product.TempSqFt" class="form-control"/>
+                                            }
+                                            <span asp-validation-for="@Model.Product.TempSqFt" class="text-danger"></span>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                             }
                             else
                             {
-                                <button type="submit" asp-route-id="@Model.Product.Id" class="btn btn-info form-control btn-lg" style="height: 50px;">Add to Cart</button>
+                                <button asp-route-id="@Model.Product.Id" class="btn btn-info form-control btn-lg" style="height: 50px;" type="submit">Add to Cart</button>
                             }
 
                         </div>

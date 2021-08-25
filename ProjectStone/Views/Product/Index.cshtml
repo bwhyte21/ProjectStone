@@ -41,11 +41,11 @@
                     <td class="text-center">
                         <div class="w-100 btn-group" role="group">
                             @* Upsert = responsible for creating a product and updating a product *@
-                            <a  asp-route-Id="@obj.Id" asp-action="Upsert" class="btn btn-success mx-2 ">
+                            <a asp-action="Upsert" asp-route-Id="@obj.Id" class="btn btn-success mx-2 ">
                                 <i class="far fa-edit"></i>
                             </a>
                             @* Pass in model obj identifier of category to delete the desired item from the table via asp-route-[paramName] tag helper *@
-                            <a  asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-danger mx-2">
+                            <a asp-action="Delete" asp-route-Id="@obj.Id" class="btn btn-danger mx-2">
                                 <i class="far fa-trash-alt"></i>
                             </a>
                         </div>
