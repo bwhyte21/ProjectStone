@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using ProjectStone_Models;
+using ProjectStone_Utility;
 
 namespace ProjectStone.Areas.Identity.Pages.Account
 {
@@ -135,11 +137,22 @@ namespace ProjectStone.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                // Old
+                //var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                
+                // New: We want to create a application user since it has the full name.
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FullName = Input.FullName, PhoneNumber = Input.PhoneNumber };
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    /*
+                     * Now to add the role of Customer to any newly registered users that register via external login.
+                     * We do not want them as admin under any circumstance.
+                     * So we will set them to the Customer role.
+                     */
+                    await _userManager.AddToRoleAsync(user, WebConstants.CustomerRole);
+
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
