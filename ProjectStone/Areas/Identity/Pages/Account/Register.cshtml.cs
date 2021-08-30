@@ -27,7 +27,8 @@ namespace ProjectStone.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RegisterModel(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ILogger<RegisterModel> logger, IEmailSender emailSender, RoleManager<IdentityRole> roleManager)
+        public RegisterModel(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ILogger<RegisterModel> logger, IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -61,7 +62,10 @@ namespace ProjectStone.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
+            [Required]
             public string FullName { get; set; }
+
+            [Required]
             public string PhoneNumber { get; set; }
         }
 
@@ -100,37 +104,35 @@ namespace ProjectStone.Areas.Identity.Pages.Account
                         // Only admin can create admin at this point.
                         await _userManager.AddToRoleAsync(user, WebConstants.AdminRole);
                     }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, WebConstants.CustomerRole);
-                    }
-                    
+                    else { await _userManager.AddToRoleAsync(user, WebConstants.CustomerRole); }
 
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new { area = "Identity", userId = user.Id,
-                            code,
-                            returnUrl },
-                        protocol: Request.Scheme);
+                    var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null, values: new
+                    {
+                        area = "Identity", userId = user.Id,
+                        code,
+                        returnUrl
+                    }, protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount) { return RedirectToPage("RegisterConfirmation", new { email = Input.Email,
-                        returnUrl }); }
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        return RedirectToPage("RegisterConfirmation", new
+                        {
+                            email = Input.Email,
+                            returnUrl
+                        });
+                    }
                     else
                     {
                         // This signs in user after [admin]account creation. We don't want this.
                         // If the new user is not in an admin role, then sign them in.
-                        if (!User.IsInRole(WebConstants.AdminRole))
-                        {
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                        }
-                        else
-                        {
-                            return RedirectToAction("Index");
-                        }
+                        if (!User.IsInRole(WebConstants.AdminRole)) { await _signInManager.SignInAsync(user, isPersistent: false); }
+                        else { return RedirectToAction("Index"); }
 
                         return LocalRedirect(returnUrl);
                     }

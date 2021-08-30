@@ -91,6 +91,16 @@ namespace ProjectStone
 
             #endregion
 
+            #region Facebook Service Authentication
+            // Register Facebook SSOAuth service to project.
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = "380311296811077";
+                options.AppSecret = "2c0fa0e654f54ba3dd1a006a7ad70472";
+            });
+            
+            #endregion
+
             services.AddControllersWithViews();
         }
 
