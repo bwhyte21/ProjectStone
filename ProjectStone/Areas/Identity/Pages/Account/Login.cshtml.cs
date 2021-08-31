@@ -96,12 +96,15 @@ namespace ProjectStone.Areas.Identity.Pages.Account
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+
+                // New: Load the external logins once more before returning to the page since it expects a model (External Logins model)
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
             }
+            // New: Load the external logins once more here as well.
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             // If we got this far, something failed, redisplay form
             return Page();

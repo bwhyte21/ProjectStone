@@ -4,15 +4,38 @@ A project based on ASP.NET Core 5:
 It is a website for Paver Company that will display all the products available with customers having the ability to send inquiries for the product they are interested in using the basic concepts of ASP.NET Core 5
 
 Screenshots:
-![projectStone_AccountMgmt](https://user-images.githubusercontent.com/4268536/130744071-ba5bb08c-b953-49e8-a2cf-533227bf416f.PNG)
-![projectStone_Authentication](https://user-images.githubusercontent.com/4268536/130744074-3d5ba73b-4e07-4eb7-b135-6d3358d79fef.PNG)
-![projectStone_BrainTreeIntegration](https://user-images.githubusercontent.com/4268536/130744075-ac060cfc-c6c8-4366-b435-0159b177545d.PNG)
-![projectStone_Categories](https://user-images.githubusercontent.com/4268536/130744078-6bd5ac23-0619-48a1-a601-d267bc8952bb.PNG)
-![projectStone_CreateAdmin](https://user-images.githubusercontent.com/4268536/130744081-05a7b185-281a-4342-a100-7dba7c5185d8.PNG)
-![projectStone_Home](https://user-images.githubusercontent.com/4268536/130744085-a2a98bec-4d97-4348-b466-f34d8d5fdddf.PNG)
-![projectStone_InquiryList](https://user-images.githubusercontent.com/4268536/130744089-9085c6a8-c0a8-439d-b728-67de9c0f887a.PNG)
-![projectStone_ProductDetails](https://user-images.githubusercontent.com/4268536/130744093-6ab01f35-787a-4ecd-91d6-3c0ff8cec3a8.PNG)
-![projectStone_Products](https://user-images.githubusercontent.com/4268536/130744096-3d957f22-e47d-41a8-8792-3be7b3332b1c.PNG)
-![projectStone_Registration](https://user-images.githubusercontent.com/4268536/130744099-b7e96fcf-8606-4390-a346-abb7fe66dfdd.PNG)
-![projectStone_ShoppingCart](https://user-images.githubusercontent.com/4268536/130744102-108c91da-5fc8-4f55-b1a6-40ff51108dd1.PNG)
-![projectStone_SubCategories](https://user-images.githubusercontent.com/4268536/130744103-87503e1a-afa9-4459-b962-77ad6cfdaec8.PNG)
+
+Authentication w/ SSO:
+![projectStone_Authentication](https://user-images.githubusercontent.com/4268536/131423713-ad8d3133-f6df-4542-bdee-68786acd3350.PNG)
+
+User Registration w/ SSO:
+![projectStone_Registration](https://user-images.githubusercontent.com/4268536/131423727-1dccbfff-2485-4db0-8c0e-8d0b3949d796.PNG)
+
+User Account Management:
+![projectStone_AccountMgmt](https://user-images.githubusercontent.com/4268536/131423711-31092646-dd22-4999-935d-016c69787e8c.PNG)
+
+Home page w/ filterable selection of products:
+![projectStone_Home](https://user-images.githubusercontent.com/4268536/131423718-f3e19627-fd98-499d-bb34-5755b6d4327f.PNG)
+
+Ability to create more Admins (Admin Only):
+![projectStone_CreateAdmin](https://user-images.githubusercontent.com/4268536/131423716-99f7c308-b7a6-4575-a32f-040037c45051.PNG)
+
+Add or Remove Categories for Product filters (Admin Only):
+![projectStone_Categories](https://user-images.githubusercontent.com/4268536/131423715-c44253d9-7322-4eeb-81b2-04f65f0e9366.PNG)
+
+Add or Remove Product SubCategories (Admin Only):
+![projectStone_SubCategories](https://user-images.githubusercontent.com/4268536/131423729-a8a83183-1dce-4541-b170-5064706db8e8.PNG)
+
+Add or Remove Products (Admin Only):
+![projectStone_Products](https://user-images.githubusercontent.com/4268536/131423723-f1ba4a23-36e7-4e74-b916-7735c63ab5c1.PNG)
+
+Add item to shopping cart (Only admin can modify SqFt value):
+![projectStone_ProductDetails](https://user-images.githubusercontent.com/4268536/131423722-f501895f-d301-49bc-b9cb-0eeac6f11c03.PNG)
+
+Preview Purchase (Admins can make the purchase, other users can only place orders):
+![projectStone_ShoppingCart](https://user-images.githubusercontent.com/4268536/131423728-567d0676-898d-4d74-9be4-68bc39927e77.PNG)
+![braintree_implementation](https://user-images.githubusercontent.com/4268536/131423710-504da6d9-24bd-4445-b363-751935b29c45.PNG)
+![projectStone_BrainTreeIntegration](https://user-images.githubusercontent.com/4268536/131423714-fd8c906c-4fef-40b3-b32f-fa52730e5b80.PNG)
+
+View Inquiry history (Admin Only):
+![projectStone_InquiryList](https://user-images.githubusercontent.com/4268536/131423720-35692737-c5de-4bec-a0f5-349e33c4dbb5.PNG)
