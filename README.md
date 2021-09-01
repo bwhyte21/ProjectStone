@@ -15,7 +15,7 @@ User Account Management:
 ![projectStone_AccountMgmt](https://user-images.githubusercontent.com/4268536/131423711-31092646-dd22-4999-935d-016c69787e8c.PNG)
 
 Home page w/ filterable selection of products:
-![projectStone_Home](https://user-images.githubusercontent.com/4268536/131423718-f3e19627-fd98-499d-bb34-5755b6d4327f.PNG)
+![projectStone_Home](https://user-images.githubusercontent.com/4268536/131757584-438e637a-892e-430c-b86d-63fe0b7620c2.PNG)
 
 Ability to create more Admins (Admin Only):
 ![projectStone_CreateAdmin](https://user-images.githubusercontent.com/4268536/131423716-99f7c308-b7a6-4575-a32f-040037c45051.PNG)
