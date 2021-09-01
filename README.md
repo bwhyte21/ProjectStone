@@ -29,11 +29,11 @@ Add or Remove Product SubCategories (Admin Only):
 Add or Remove Products (Admin Only):
 ![projectStone_Products](https://user-images.githubusercontent.com/4268536/131423723-f1ba4a23-36e7-4e74-b916-7735c63ab5c1.PNG)
 
-Add item to shopping cart (Only admin can modify SqFt value):
-![projectStone_ProductDetails](https://user-images.githubusercontent.com/4268536/131423722-f501895f-d301-49bc-b9cb-0eeac6f11c03.PNG)
+Product Details w/ ability to add item to shopping cart (Only admin can modify SqFt value):
+![projectStone_ProductDetails](https://user-images.githubusercontent.com/4268536/131757821-2a74c347-c753-440a-ad67-afdb72779695.PNG)
 
-Preview Purchase (Admins can make the purchase, other users can only place orders):
-![projectStone_ShoppingCart](https://user-images.githubusercontent.com/4268536/131423728-567d0676-898d-4d74-9be4-68bc39927e77.PNG)
+Shopping Cart and Preview Purchase (Admins can make the purchase, other users can only place orders):
+![projectStone_ShoppingCart](https://user-images.githubusercontent.com/4268536/131757865-83cdbc07-7171-4357-8141-84cf18678bd7.PNG)
 ![braintree_implementation](https://user-images.githubusercontent.com/4268536/131423710-504da6d9-24bd-4445-b363-751935b29c45.PNG)
 ![projectStone_BrainTreeIntegration](https://user-images.githubusercontent.com/4268536/131423714-fd8c906c-4fef-40b3-b32f-fa52730e5b80.PNG)
 
