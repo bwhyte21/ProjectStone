@@ -9,7 +9,7 @@ using ProjectStone_Utility.BrainTree;
 
 namespace ProjectStone.Controllers
 {
-  [Authorize]
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly IBrainTreeGate _brainTree;
@@ -22,7 +22,9 @@ namespace ProjectStone.Controllers
             _orderHeaderRepo = orderHeaderRepo;
             _orderDetailRepo = orderDetailRepo;
         }
-        public IActionResult Index()
+
+        // Parameters are for the Search Filter Form in the view via HtmlHelpers.
+        public IActionResult Index(string searchName = null, string searchEmail = null, string searchPhone = null, string OrderStatus = null)
         {
             // Populate new VM.
             var orderListViewModel = new OrderListViewModel
@@ -35,6 +37,27 @@ namespace ProjectStone.Controllers
                     Value = item
                 })
             };
+
+            // Check search filter form params for search queries.
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                orderListViewModel.OrderHeadersList = orderListViewModel.OrderHeadersList.Where(order => order.FullName.ToLower().Contains(searchName.ToLower())); // using toLower to eliminate case sensitivity.
+            }
+
+            if (!string.IsNullOrEmpty(searchEmail))
+            {
+                orderListViewModel.OrderHeadersList = orderListViewModel.OrderHeadersList.Where(order => order.Email.ToLower().Contains(searchEmail.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(searchPhone))
+            {
+                orderListViewModel.OrderHeadersList = orderListViewModel.OrderHeadersList.Where(order => order.PhoneNumber.Contains(searchPhone));
+            }
+
+            if (!string.IsNullOrEmpty(OrderStatus) && OrderStatus is not "--Order Status--")
+            {
+                orderListViewModel.OrderHeadersList = orderListViewModel.OrderHeadersList.Where(order => order.OrderStatus.Contains(OrderStatus));
+            }
 
             // Pass view model to index view.
             return View(orderListViewModel);
