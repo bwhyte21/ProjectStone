@@ -37,5 +37,9 @@ Shopping Cart and Preview Purchase (Admins can make the purchase, other users ca
 ![braintree_implementation](https://user-images.githubusercontent.com/4268536/131423710-504da6d9-24bd-4445-b363-751935b29c45.PNG)
 ![projectStone_BrainTreeIntegration](https://user-images.githubusercontent.com/4268536/131423714-fd8c906c-4fef-40b3-b32f-fa52730e5b80.PNG)
 
-View Inquiry history (Admin Only):
+View and manage Inquiry history (Admin Only):
 ![projectStone_InquiryList](https://user-images.githubusercontent.com/4268536/131423720-35692737-c5de-4bec-a0f5-349e33c4dbb5.PNG)
+
+View and manage Order history (Admin Only):
+![projectStone_OrderList](https://user-images.githubusercontent.com/4268536/131930382-d7dfd41a-4f58-4467-9ff8-bd05248f80c7.PNG)
+
