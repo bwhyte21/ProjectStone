@@ -30,7 +30,6 @@
                                     </div>
                                     <div class="col-9">
                                         <input asp-for="ApplicationUser.FullName" class="form-control" required type="text"/>
-                                        <span asp-validation-for="ApplicationUser.FullName" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="row my-1">
@@ -39,7 +38,6 @@
                                     </div>
                                     <div class="col-9">
                                         <input asp-for="ApplicationUser.PhoneNumber" class="form-control" required type="text"/>
-                                        <span asp-validation-for="ApplicationUser.PhoneNumber" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="row my-1">
@@ -48,7 +46,6 @@
                                     </div>
                                     <div class="col-9">
                                         <input asp-for="ApplicationUser.Email" class="form-control" required type="text"/>
-                                        <span asp-validation-for="ApplicationUser.Email" class="text-danger"></span>
                                     </div>
                                 </div>
                                 @if (User.IsInRole(WebConstants.AdminRole))
@@ -59,7 +56,6 @@
                                         </div>
                                         <div class="col-9">
                                             <input asp-for="ApplicationUser.Address" class="form-control" type="text"/>
-                                            <span asp-validation-for="ApplicationUser.Address" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="row my-1">
@@ -68,7 +64,6 @@
                                         </div>
                                         <div class="col-9">
                                             <input asp-for="ApplicationUser.City" class="form-control" type="text"/>
-                                            <span asp-validation-for="ApplicationUser.City" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="row my-1">
@@ -77,7 +72,6 @@
                                         </div>
                                         <div class="col-9">
                                             <input asp-for="ApplicationUser.State" class="form-control" type="text"/>
-                                            <span asp-validation-for="ApplicationUser.State" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="row my-1">
@@ -86,7 +80,6 @@
                                         </div>
                                         <div class="col-9">
                                             <input asp-for="ApplicationUser.PostalCode" class="form-control" type="text"/>
-                                            <span asp-validation-for="ApplicationUser.PostalCode" class="text-danger"></span>
                                         </div>
                                     </div>
                                 }
@@ -155,11 +148,11 @@
                         <div class="col-12 col-md-5 offset-md-7">
                             @if (User.IsInRole(WebConstants.AdminRole))
                             {
-                                <button class="btn btn-success form-control" id="submitOrderBtn" type="submit">Submit Order</button>
+                                <button class="btn btn-success form-control" id="submitOrderBtn" onclick="return validateInput();" type="submit">Submit Order</button>
                             }
                             else
                             {
-                                <button class="btn btn-primary form-control" type="submit">Submit Inquiry</button>
+                                <button class="btn btn-primary form-control" onclick="return validateInput();" type="submit">Submit Inquiry</button>
                             }
                         </div>
                     </div>
@@ -177,6 +170,7 @@
     <script>
         // ToDo later: separate any scripts into their own JS file for organizational purposes.
 
+        // BrainTree.
         // Retrieve client token from ViewBag.
         var clientToken = "@ViewBag.ClientToken";
 
@@ -200,5 +194,80 @@
                 });
             });
         });
+
+        // SweetAlert2.
+        // Post only if validateInput returns true. If false, do not post, display error.
+        function validateInput() {
+            // Get input types. "." are translated to "_" for the element Ids of asp properties.
+            const appName = document.getElementById("ApplicationUser_FullName").value;
+            const appPhone = document.getElementById("ApplicationUser_PhoneNumber").value;
+            const appEmail = document.getElementById("ApplicationUser_Email").value;
+            const appAddress = document.getElementById("ApplicationUser_Address").value;
+            const appCity = document.getElementById("ApplicationUser_City").value;
+            const appState = document.getElementById("ApplicationUser_State").value;
+            const appPostalCode = document.getElementById("ApplicationUser_PostalCode").value;
+
+            // Check input type values.
+            if (appName.toString() == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Well, this is awkward...',
+                    text: 'Please enter Full Name to continue!'
+                });
+                // Return false so the form is not posted.
+                return false;
+            }
+            if (appPhone.toString() == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Well, this is awkward...',
+                    text: 'Please enter Phone Number to continue!'
+                });
+                return false;
+            }
+            if (appEmail.toString() == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Well, this is awkward...',
+                    text: 'Please enter Email to continue!'
+                });
+                return false;
+            }
+            if (appAddress.toString() == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Well, this is awkward...',
+                    text: 'Please enter Address to continue!'
+                });
+                return false;
+            }
+            if (appCity.toString() == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Well, this is awkward...',
+                    text: 'Please enter City to continue!'
+                });
+                return false;
+            }
+            if (appState.toString() == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Well, this is awkward...',
+                    text: 'Please enter State to continue!'
+                });
+                return false;
+            }
+            if (appPostalCode.toString() == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Well, this is awkward...',
+                    text: 'Please enter Postal Code to continue!'
+                });
+                return false;
+            }
+            
+            // Return true if no error.
+            return true;
+        }
     </script>
 }
