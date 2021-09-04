@@ -16,6 +16,10 @@ namespace ProjectStone.Controllers
         private readonly IOrderHeaderRepository _orderHeaderRepo;
         private readonly IOrderDetailRepository _orderDetailRepo;
 
+        // Bind OrderViewModel globally so we do not need to retrieve it for details and add it as a param. (for this example)
+        [BindProperty]
+        public OrderViewModel OrderVm { get; set; }
+
         public OrderController(IBrainTreeGate brainTree, IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo)
         {
             _brainTree = brainTree;
@@ -61,6 +65,18 @@ namespace ProjectStone.Controllers
 
             // Pass view model to index view.
             return View(orderListViewModel);
+        }
+
+        // Order Details page.
+        public IActionResult Details(int id)
+        {
+            OrderVm = new OrderViewModel
+            {
+                OrderHeader = _orderHeaderRepo.FirstOrDefault(order => order.Id == id),
+                OrderDetail = _orderDetailRepo.GetAll(order => order.OrderHeader.Id == id, includeProperties: "Product")
+            };
+
+            return View(OrderVm);
         }
     }
 }
