@@ -9,7 +9,7 @@ Authentication w/ SSO:
 ![projectStone_Authentication](https://user-images.githubusercontent.com/4268536/131423713-ad8d3133-f6df-4542-bdee-68786acd3350.PNG)
 
 User Registration w/ SSO:
-![projectStone_Registration](https://user-images.githubusercontent.com/4268536/131423727-1dccbfff-2485-4db0-8c0e-8d0b3949d796.PNG)
+![projectStone_Registration](https://user-images.githubusercontent.com/4268536/132275984-05109d73-433c-4017-ac7e-93bf24f9790e.PNG)
 
 User Account Management:
 ![projectStone_AccountMgmt](https://user-images.githubusercontent.com/4268536/131423711-31092646-dd22-4999-935d-016c69787e8c.PNG)
@@ -42,5 +42,4 @@ View and manage Inquiry history (Admin Only):
 
 View and manage Order history (Admin Only):
 ![projectStone_OrderList](https://user-images.githubusercontent.com/4268536/131930382-d7dfd41a-4f58-4467-9ff8-bd05248f80c7.PNG)
-![projectStone_OrderManagement](https://user-images.githubusercontent.com/4268536/132275598-a177281c-75ab-409e-9cbe-5749755bc320.PNG)
-
+![projectStone_OrderManagement](https://user-images.githubusercontent.com/4268536/132276018-f331c277-f42b-49ca-ae5e-e4fe85bf3543.PNG)
