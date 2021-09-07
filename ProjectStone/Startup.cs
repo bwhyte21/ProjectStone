@@ -11,6 +11,7 @@ using ProjectStone_DataAccess.Repository;
 using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Utility;
 using System;
+using ProjectStone_DataAccess.Initializer;
 using ProjectStone_Utility.BrainTree;
 
 namespace ProjectStone
@@ -88,6 +89,10 @@ namespace ProjectStone
             services.AddScoped<IOrderHeaderRepository, OrderHeaderRepository>();
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+            
+            // This service will be for the DbInitializer with the purpose of Seeding the DB in a new environment for deployment.
+            // This will also be added to the pipeline config below.
+            services.AddScoped<IDbInitializer, DbInitializer>();
 
             #endregion
 
@@ -105,7 +110,7 @@ namespace ProjectStone
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
             #region SyncFusion License Config
             
@@ -140,7 +145,14 @@ namespace ProjectStone
 
             app.UseAuthorization();
 
-            #region Session Pipeline Cofig
+            #region DBInitializer Pipeline Config
+            
+            // Invoke the initializer located in DataAccess.
+            dbInitializer.Initialize();
+
+            #endregion
+
+            #region Session Pipeline Config
 
             // Extra Session service extensions are to be located in a "Utility" folder.
             app.UseSession();
