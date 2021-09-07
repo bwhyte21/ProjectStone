@@ -18,7 +18,7 @@ Home page w/ filterable selection of products:
 ![projectStone_Home](https://user-images.githubusercontent.com/4268536/131757584-438e637a-892e-430c-b86d-63fe0b7620c2.PNG)
 
 Ability to create more Admins (Admin Only):
-![projectStone_CreateAdmin](https://user-images.githubusercontent.com/4268536/131423716-99f7c308-b7a6-4575-a32f-040037c45051.PNG)
+![projectStone_CreateAdmin](https://user-images.githubusercontent.com/4268536/132275475-8bf94268-af64-45e4-be01-d0ac13ca7764.PNG)
 
 Add or Remove Categories for Product filters (Admin Only):
 ![projectStone_Categories](https://user-images.githubusercontent.com/4268536/131423715-c44253d9-7322-4eeb-81b2-04f65f0e9366.PNG)
@@ -42,4 +42,5 @@ View and manage Inquiry history (Admin Only):
 
 View and manage Order history (Admin Only):
 ![projectStone_OrderList](https://user-images.githubusercontent.com/4268536/131930382-d7dfd41a-4f58-4467-9ff8-bd05248f80c7.PNG)
+![projectStone_OrderManagement](https://user-images.githubusercontent.com/4268536/132275598-a177281c-75ab-409e-9cbe-5749755bc320.PNG)
 
