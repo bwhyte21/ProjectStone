@@ -42,4 +42,4 @@ View and manage Inquiry history (Admin Only):
 
 View and manage Order history (Admin Only):
 ![projectStone_OrderList](https://user-images.githubusercontent.com/4268536/131930382-d7dfd41a-4f58-4467-9ff8-bd05248f80c7.PNG)
-![projectStone_OrderManagement](https://user-images.githubusercontent.com/4268536/132276018-f331c277-f42b-49ca-ae5e-e4fe85bf3543.PNG)
+![projectStone_OrderManagement](https://user-images.githubusercontent.com/4268536/132276206-fa32632f-9648-4e7a-b2f7-a4a493ef0048.PNG)
