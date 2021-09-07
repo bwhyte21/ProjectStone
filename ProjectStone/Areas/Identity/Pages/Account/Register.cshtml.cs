@@ -129,10 +129,18 @@ namespace ProjectStone.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        // This signs in user after [admin]account creation. We don't want this.
+                        // This signs in user after [admin] account creation. We don't want this.
                         // If the new user is not in an admin role, then sign them in.
-                        if (!User.IsInRole(WebConstants.AdminRole)) { await _signInManager.SignInAsync(user, isPersistent: false); }
-                        else { return RedirectToAction("Index"); }
+                        if (!User.IsInRole(WebConstants.AdminRole))
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
+                        else
+                        {
+                            // Alert Admin that a new Admin has been successfully registered.
+                            TempData[WebConstants.Success] = user.FullName + " has been successfully registered.";
+                            return RedirectToAction("Index");
+                        }
 
                         return LocalRedirect(returnUrl);
                     }

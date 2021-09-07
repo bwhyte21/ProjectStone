@@ -16,12 +16,21 @@ namespace ProjectStone.Controllers
         private readonly IProductRepository _productRepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
+        /// <summary>
+        /// CTOR; Sets DI objects.
+        /// </summary>
+        /// <param name="productRepo"></param>
+        /// <param name="webHostEnvironment"></param>
         public ProductController(IProductRepository productRepo, IWebHostEnvironment webHostEnvironment)
         {
             _productRepo = productRepo;
             _webHostEnvironment = webHostEnvironment; // Using DI to get webhostenv.
         }
 
+        /// <summary>
+        /// Product Page.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             #region before eager loading (older)
@@ -56,7 +65,11 @@ namespace ProjectStone.Controllers
             return View(productList);
         }
 
-        // GET - Upsert (Null for Create, int val for Edit)
+        /// <summary>
+        /// GET - Upsert (Null for Create, int val for Edit)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult Upsert(int? id)
         {
             #region Before Repo Pattern
@@ -100,7 +113,11 @@ namespace ProjectStone.Controllers
             return View(productViewModel);
         }
 
-        // POST - Create
+        /// <summary>
+        /// POST - Upsert
+        /// </summary>
+        /// <param name="productViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(ProductViewModel productViewModel)
@@ -177,7 +194,11 @@ namespace ProjectStone.Controllers
             return View(productViewModel);
         }
 
-        // GET - Delete
+        /// <summary>
+        /// GET - Delete
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult Delete(int? id)
         {
             if (id is null or 0) { return NotFound(); }
@@ -194,8 +215,12 @@ namespace ProjectStone.Controllers
             return View(productFromDb);
         }
 
-        // POST - Delete
-        // ActionName = Custom action name to let .NetCore know this is a Delete Action as well.
+        /// <summary>
+        /// POST - Delete
+        /// ActionName = Custom action name to let .NetCore know this is a Delete Action as well.  
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]

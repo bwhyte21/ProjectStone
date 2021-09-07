@@ -107,6 +107,13 @@ namespace ProjectStone
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            #region SyncFusion License Config
+            
+            // Register Syncfusion License.
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(Configuration["SyncFusion:LicenseKey"]);
+
+            #endregion
+            
             if (env.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
             else
             {

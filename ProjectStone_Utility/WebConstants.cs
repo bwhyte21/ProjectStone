@@ -1,12 +1,15 @@
-﻿namespace ProjectStone_Utility
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+namespace ProjectStone_Utility
 {
-  /// <summary>
-  /// Moved into ProjectStone_Utility from Project Stone after library creation.
-  /// Add the reference of this Utility project into the Main project (Project Stone)
-  ///
-  /// Eliminate the use of magic strings. Create constants here.
-  /// </summary>
-  public class WebConstants
+    /// <summary>
+    /// Moved into ProjectStone_Utility from Project Stone after library creation.
+    /// Add the reference of this Utility project into the Main project (Project Stone)
+    ///
+    /// Eliminate the use of magic strings. Create constants here.
+    /// </summary>
+    public class WebConstants
     {
         // Access ImagePath.
         public const string ImagePath = @"\imgs\product\";
@@ -33,9 +36,21 @@
         // Order Status.
         public const string StatusPending = "Pending";
         public const string StatusApproved = "Approved";
-        public const string StatusInProgress = "Processing";
+        public const string StatusInProcess = "Processing";
         public const string StatusShipped = "Shipped";
         public const string StatusCancelled = "Cancelled";
         public const string StatusRefunded = "Refunded";
+
+        // Create a collection (IEnumerable) of strings to list the Order Statuses to be used in the Order Controller.
+        // MUST be a ReadOnly Collection in order to create a list in this class.
+        public static readonly IEnumerable<string> statusList = new ReadOnlyCollection<string>(new List<string>
+        {
+            StatusApproved,
+            StatusCancelled,
+            StatusInProcess,
+            StatusPending,
+            StatusRefunded,
+            StatusShipped
+        });
     }
 }

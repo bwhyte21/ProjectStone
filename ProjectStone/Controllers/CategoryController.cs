@@ -26,11 +26,19 @@ namespace ProjectStone.Controllers
 
         #endregion
 
+        /// <summary>
+        /// CTOR; Sets DI object.
+        /// </summary>
+        /// <param name="categoryRepo"></param>
         public CategoryController(ICategoryRepository categoryRepo)
         {
             _categoryRepo = categoryRepo;
         }
 
+        /// <summary>
+        /// Category page.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             #region Old Code
@@ -46,13 +54,20 @@ namespace ProjectStone.Controllers
             return View(categoryList);
         }
 
-        // GET - Create
+        /// <summary>
+        /// GET - Create 
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST - Create
+        /// <summary>
+        /// POST - Create
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category obj)
@@ -89,7 +104,11 @@ namespace ProjectStone.Controllers
             return View(obj);
         }
 
-        // GET - Edit
+        /// <summary>
+        /// GET - Edit
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult Edit(int? id)
         {
             if (id is null or 0) { return NotFound(); }
@@ -109,7 +128,11 @@ namespace ProjectStone.Controllers
             return View(categoryObj);
         }
 
-        // POST - Edit
+        /// <summary>
+        /// POST - Edit
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Category obj)
@@ -127,12 +150,17 @@ namespace ProjectStone.Controllers
 
                 return RedirectToAction("Index");
             }
+
             TempData[WebConstants.Error] = "Error modifying category.";
 
             return View(obj);
         }
 
-        // GET - Delete
+        /// <summary>
+        /// GET - Delete
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult Delete(int? id)
         {
             if (id is null or 0) { return NotFound(); }
@@ -149,18 +177,25 @@ namespace ProjectStone.Controllers
             return View(categoryObj);
         }
 
-        // POST - Delete
+        /// <summary>
+        /// POST - Delete
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            // Old
+            #region Old
+
             //var obj = _db.Category.Find(id);
 
             //if (obj is null) { NotFound(); }
 
             //_db.Category.Remove(obj);
             //_db.SaveChanges();
+
+            #endregion
 
             // New
             var categoryObj = _categoryRepo.Find(id.GetValueOrDefault());

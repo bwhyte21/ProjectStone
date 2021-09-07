@@ -4,7 +4,7 @@
 <div class="">
     <form method="post">
         <input asp-for="@Model.Product.Id" hidden/>
-        <div class="container backgroundWhite pt-4">
+        <div class="container bg-white pt-4">
             <div class="card" style="border: 1px solid #000000;">
                 <div class="card-header bg-dark text-light ms-0 row container" style="border-radius: 0px;">
                     <div class="col-12 col-md-6">
@@ -74,3 +74,8 @@
         </div>
     </form>
 </div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}
