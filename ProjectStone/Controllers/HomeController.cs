@@ -16,6 +16,12 @@ namespace ProjectStone.Controllers
         private readonly IProductRepository _productRepo;
         private readonly ICategoryRepository _categoryRepo;
 
+        /// <summary>
+        /// CTOR; Sets Dependency Injection objects for use in this controller.
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="productRepo"></param>
+        /// <param name="categoryRepo"></param>
         public HomeController(ILogger<HomeController> logger, IProductRepository productRepo, ICategoryRepository categoryRepo)
         {
             _logger = logger;
@@ -23,6 +29,10 @@ namespace ProjectStone.Controllers
             _categoryRepo = categoryRepo;
         }
 
+        /// <summary>
+        /// Dashboard page.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             var homeViewModel = new HomeViewModel
@@ -34,6 +44,11 @@ namespace ProjectStone.Controllers
             return View(homeViewModel);
         }
 
+        /// <summary>
+        /// Item Details.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult Details(int id)
         {
             // Retrieve session
@@ -57,6 +72,12 @@ namespace ProjectStone.Controllers
             return View(detailsViewModel);
         }
 
+        /// <summary>
+        /// Item Details w/ Post to Cart.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="detailsViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [ActionName("Details")]
         public IActionResult DetailsPost(int id, DetailsViewModel detailsViewModel)
@@ -86,6 +107,11 @@ namespace ProjectStone.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Remove from cart action in Details page.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult RemoveFromCart(int id)
         {
             var shoppingCartList = new List<ShoppingCart>();

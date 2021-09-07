@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Braintree;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Models;
 using ProjectStone_Models.ViewModels;
 using ProjectStone_Utility;
+using ProjectStone_Utility.BrainTree;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,9 +16,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using ProjectStone_Utility.BrainTree;
-using Braintree;
 
 namespace ProjectStone.Controllers
 {
@@ -33,10 +33,24 @@ namespace ProjectStone.Controllers
         private readonly IOrderDetailRepository _orderDetailRepo;
         private readonly IBrainTreeGate _brainTree;
 
-        // Once it's bound in the post, it does not need to be explicitly defined in the action method's parameter. It will be available by default in the summary post.
+        /// <summary>
+        /// Once it's bound in the post, it does not need to be explicitly defined in the action method's parameter. It will be available by default in the summary post.
+        /// </summary>
         [BindProperty]
         public ProductUserViewModel ProductUserVm { get; set; }
 
+        /// <summary>
+        /// CTOR; Sets DI objects
+        /// </summary>
+        /// <param name="webHostEnvironment"></param>
+        /// <param name="emailSender"></param>
+        /// <param name="userRepo"></param>
+        /// <param name="productRepo"></param>
+        /// <param name="inqHeaderRepo"></param>
+        /// <param name="inqDetailRepo"></param>
+        /// <param name="orderHeaderRepo"></param>
+        /// <param name="orderDetailRepo"></param>
+        /// <param name="brainTree"></param>
         public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender, IApplicationUserRepository userRepo, IProductRepository productRepo,
             IInquiryHeaderRepository inqHeaderRepo, IInquiryDetailRepository inqDetailRepo, IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo,
             IBrainTreeGate brainTree)
@@ -53,6 +67,10 @@ namespace ProjectStone.Controllers
             _brainTree = brainTree;
         }
 
+        /// <summary>
+        /// Shopping Cart page.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             var shoppingCartList = new List<ShoppingCart>();
@@ -86,23 +104,41 @@ namespace ProjectStone.Controllers
             return View(prodList);
         }
 
+        /// <summary>
+        /// Shopping cart page
+        /// </summary>
+        /// <param name="productList"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Index")]
         public IActionResult IndexPost(IEnumerable<Product> productList)
         {
+            #region Old ForEach
+
             // In case a user decides to change the value THEN click continue, rather than Update.
-            var shoppingCartList = new List<ShoppingCart>();
+            //var shoppingCartList = new List<ShoppingCart>();
 
             // Iterate through all the objects to set the SqFt value.
-            foreach (var product in productList)
+            //foreach (var product in productList)
+            //{
+            //    shoppingCartList.Add(new ShoppingCart
+            //    {
+            //        ProductId = product.Id,
+            //        SqFt = product.TempSqFt
+            //    });
+            //}
+
+            #endregion
+
+            // Same code as above: Uses LINQ Expression.
+            // In case a user decides to change the value THEN click continue, rather than Update.
+            // Iterate through all the objects to set the SqFt value.
+            var shoppingCartList = productList.Select(product => new ShoppingCart
             {
-                shoppingCartList.Add(new ShoppingCart
-                {
-                    ProductId = product.Id,
-                    SqFt = product.TempSqFt
-                });
-            }
+                ProductId = product.Id,
+                SqFt = product.TempSqFt
+            }).ToList();
 
             // Update current session with updated shopping cart.
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
@@ -111,7 +147,10 @@ namespace ProjectStone.Controllers
             return RedirectToAction(nameof(Summary));
         }
 
-        // Cart Summary
+        /// <summary>
+        /// Cart Summary.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Summary()
         {
             ApplicationUser appUser;
@@ -194,6 +233,12 @@ namespace ProjectStone.Controllers
             return View(ProductUserVm);
         }
 
+        /// <summary>
+        /// Cart Summary that creates Order or Inquiry.
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="productUserViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
@@ -375,6 +420,11 @@ namespace ProjectStone.Controllers
             return View(orderHeader);
         }
 
+        /// <summary>
+        /// Removes cart item.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult Remove(int id)
         {
             var shoppingCartList = new List<ShoppingCart>();
@@ -396,6 +446,11 @@ namespace ProjectStone.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Updates cart value.
+        /// </summary>
+        /// <param name="productList"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult UpdateCart(IEnumerable<Product> productList)
@@ -418,6 +473,10 @@ namespace ProjectStone.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Clears cart.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Clear()
         {
             // Clear the session to empty out the cart.

@@ -6,28 +6,45 @@ using ProjectStone_Utility;
 
 namespace ProjectStone.Controllers
 {
-  [Authorize(Roles = WebConstants.AdminRole)]
+    [Authorize(Roles = WebConstants.AdminRole)]
     public class SubCategoryController : Controller
     {
         private readonly ISubCategoryRepository _subCategoryRepo;
 
+        /// <summary>
+        /// CTOR; Sets DI object.
+        /// </summary>
+        /// <param name="subCategoryRepo"></param>
         public SubCategoryController(ISubCategoryRepository subCategoryRepo)
         {
             _subCategoryRepo = subCategoryRepo;
         }
+
+        /// <summary>
+        /// SubCategory Page.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             var subCategoryList = _subCategoryRepo.GetAll();
+
             return View(subCategoryList);
         }
 
-        // GET
+        /// <summary>
+        /// GET - Create SubCategory Page.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST
+        /// <summary>
+        /// POST - Post Created Category.
+        /// </summary>
+        /// <param name="subCategoryObj"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(SubCategory subCategoryObj)
@@ -37,15 +54,20 @@ namespace ProjectStone.Controllers
                 _subCategoryRepo.Add(subCategoryObj);
                 _subCategoryRepo.Save();
                 TempData[WebConstants.Success] = "SubCategory created successfully!";
+
                 return Redirect("Index");
             }
-            
+
             TempData[WebConstants.Error] = "Error creating SubCategory.";
 
             return View(subCategoryObj);
         }
 
-        // GET - Edit
+        /// <summary>
+        /// GET - Edit - Edit SubCategory.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult Edit(int? id)
         {
             if (id is null or 0) { return NotFound(); }
@@ -57,7 +79,11 @@ namespace ProjectStone.Controllers
             return View(subCategoryObj);
         }
 
-        // POST - Edit
+        /// <summary>
+        /// POST - Edit - Posted Edited SubCategory. 
+        /// </summary>
+        /// <param name="subCategoryObj"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(SubCategory subCategoryObj)
@@ -76,7 +102,11 @@ namespace ProjectStone.Controllers
             return View(subCategoryObj);
         }
 
-        // GET - Delete
+        /// <summary>
+        /// GET - Delete - Delete SubCategory Page.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult Delete(int? id)
         {
             if (id is null or 0) { return NotFound(); }
@@ -87,13 +117,17 @@ namespace ProjectStone.Controllers
             return View(subCategoryObj);
         }
 
-        // POST - Delete
+        /// <summary>
+        /// POST - Delete - Delete SubCategory.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
             var subCategoryObj = _subCategoryRepo.Find(id.GetValueOrDefault());
-            
+
             if (subCategoryObj == null) { NotFound(); }
 
             _subCategoryRepo.Remove(subCategoryObj);

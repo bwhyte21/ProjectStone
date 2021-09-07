@@ -1,4 +1,5 @@
-﻿@model ProjectStone_Models.ViewModels.OrderViewModel
+﻿@using ProjectStone_Utility
+@model ProjectStone_Models.ViewModels.OrderViewModel
 
 <form method="post">
     <input asp-for="OrderHeader.Id" hidden/>
@@ -111,58 +112,66 @@
                             </div>
                             <div class="row my-1">
                                 <div class="col-9 offset-3">
+                                    @* "asp-action" MUST be accompanied with a 'formmethod="post"', otherwise it will not work. *@
                                     <input type="submit" value="Update Order Details" class="btn btn-warning form-control"
-                                           formaction="/Order/UpdateOrderDetails" formmethod="post"/>
+                                           asp-action="UpdateOrderDetails" formmethod="post"/>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 col-lg-5 offset-lg-1">
-                            <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="text-info">Order Summary</span>
-                            </h4>
-                            <ul class="list-group mb-3">
-                                @foreach (var detail in Model.OrderDetail)
-                                {
-                                    var total = detail.PricePerSqFt * detail.SqFt;
-                                    <li class="list-group-item d-flex justify-content-between p-2">
-                                        <div class="row container">
-                                            <div class="col-8">
-                                                <h6 class="my-0 text-info">@detail.Product.Name</h6>
-                                                <small class="text-muted">Price : @detail.PricePerSqFt.ToString("C")</small><br/>
-                                                <small class="text-muted">Quantity : @detail.SqFt</small>
-                                            </div>
-                                            <div class="col-4">
-                                                <p class="text-success">@total.ToString("C")</p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                }
-                                <li class="list-group-item bg-info">
-                                    <div class="row container">
-                                        <div class="col-6">
-                                            <h5 class="text-white">TOTAL </h5>
-                                        </div>
-                                        <div class="col-6 text-end">
-                                            <h5 class="text-white">@(Model.OrderHeader.FinalOrderTotal.ToString("C"))</h5>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                          <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-info">Order Summary</span>
+                          </h4>
+                          <ul class="list-group mb-3">
+                            @foreach (var detail in Model.OrderDetail)
+                            {
+                              var total = detail.PricePerSqFt * detail.SqFt;
+                              <li class="list-group-item d-flex justify-content-between p-2">
+                                <div class="row container">
+                                  <div class="col-8">
+                                    <h6 class="my-0 text-info">@detail.Product.Name</h6>
+                                    <small class="text-muted">Price : @detail.PricePerSqFt.ToString("C")</small><br />
+                                    <small class="text-muted">Quantity : @detail.SqFt</small>
+                                  </div>
+                                  <div class="col-4">
+                                    <p class="text-success">@total.ToString("C")</p>
+                                  </div>
+                                </div>
+                              </li>
+                            }
+                            <li class="list-group-item bg-info">
+                              <div class="row container">
+                                <div class="col-6">
+                                  <h5 class="text-white">TOTAL </h5>
+                                </div>
+                                <div class="col-6 text-end">
+                                  <h5 class="text-white">@(Model.OrderHeader.FinalOrderTotal.ToString("C"))</h5>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
 
-                            <br/>
-
-                            <input type="submit" value="Start Processing" class="btn btn-info text-white form-control"/>
-
-                            <input type="submit" value="Ship Order" class="btn btn-primary form-control"/>
-
-
-                            <div class="pt-2">
-                                <button type="submit"
-                                        class="btn btn-danger form-control"
-                                        formmethod="post">
-                                    Cancel Order
-                                </button>
-                            </div>
+                          <br />
+                          @* Start Processing should be visible if the current status is approved. *@
+                          @if (Model.OrderHeader.OrderStatus is WebConstants.StatusApproved)
+                          {
+                            <input type="submit" value="Start Processing" formmethod="post" asp-action="StartProcessing" class="btn btn-info text-white form-control" />
+                          }
+                          @if (Model.OrderHeader.OrderStatus is WebConstants.StatusInProcess)
+                          {
+                            <input type="submit" value="Ship Order" formmethod="post" asp-action="ShipOrder" class="btn btn-primary form-control" />
+                          }
+                          @if (Model.OrderHeader.OrderStatus is not WebConstants.StatusRefunded && Model.OrderHeader.OrderStatus is not WebConstants.StatusCancelled)
+                          {
+                          <div class="pt-2">
+                            <button type="submit"
+                                    class="btn btn-danger form-control"
+                                    formmethod="post"
+                                    asp-action="CancelOrder">
+                              Cancel Order
+                            </button>
+                          </div>
+                          }
                         </div>
                     </div>
                 </div>

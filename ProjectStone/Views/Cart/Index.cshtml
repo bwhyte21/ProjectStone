@@ -87,6 +87,7 @@
                                         totalPrice = Model[i].Price * Model[i].TempSqFt;
                                         <div class="col-4 col-lg-2 pt-lg-4" style="font-size: 11px;">
                                             <input aria-labelledby="sqFtTh" asp-for="@Model[i].TempSqFt" class="form-control" id="cartItem_@Model[i].Id" type="number"/>
+                                            <span asp-validation-for="@Model[i].TempSqFt" class="text-danger"></span>
                                         </div>
                                         <div class="col-3 col-lg-2 pt-lg-4" style="font-size: 11px;">
                                             <span style="font-size: 17px;"> @totalPrice.ToString("C") </span>/ sqft
@@ -135,4 +136,9 @@
 else
 {
     <p>Your shopping cart is empty... <i class="far fa-grimace"></i></p>
+}
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
 }
