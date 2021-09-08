@@ -110,7 +110,7 @@ namespace ProjectStone.Controllers
         /// <param name="productList"></param>
         /// <returns></returns>
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // << This attribute prevents CSRF attacks on form posts.
         [ActionName("Index")]
         public IActionResult IndexPost(IEnumerable<Product> productList)
         {
