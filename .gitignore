@@ -14,8 +14,8 @@
 *.userprefs
 
 # AppSettings.json (hide secret and api keys)
-appsettings.json
-appsettings.Development.json
+ProjectStone/appsettings.json
+ProjectStone/appsettings.Development.json
 
 # Mono auto generated files
 mono_crash.*
