@@ -5,7 +5,7 @@ It is a website for Paver Company that will display all the products available w
 
 Site is now live on: https://projectstonelive.azurewebsites.net/
 
-Note: This project will soon receive front-end updates, so the screenshots below are subject to change.
+Note: This project will soon receive front-end design changes, so the screenshots below are subject to change.
 
 Screenshots:
 
