@@ -2,7 +2,7 @@
 var dataTable;
 
 $(document).ready(function() {
-    // Call Api Method in Controller. 
+    // Call the Api Method made in the Controller. 
     loadDataTable("GetInquiryList");
 });
 
