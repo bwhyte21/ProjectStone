@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Braintree" Version="5.9.0" />
     <PackageReference Include="Mailjet.Api" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.11" />
   </ItemGroup>
 
 </Project>
