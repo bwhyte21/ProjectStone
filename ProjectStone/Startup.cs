@@ -11,6 +11,7 @@ using ProjectStone_DataAccess.Repository;
 using ProjectStone_DataAccess.Repository.IRepository;
 using ProjectStone_Utility;
 using System;
+using Microsoft.AspNetCore.Http;
 using ProjectStone_DataAccess.Initializer;
 using ProjectStone_Utility.BrainTree;
 
@@ -64,6 +65,8 @@ namespace ProjectStone
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(10);
                 options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.IsEssential = true;
             });
 
