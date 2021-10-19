@@ -17,14 +17,15 @@ using ProjectStone_Utility.BrainTree;
 
 namespace ProjectStone
 {
-  public class Startup
+    public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        // Make the IConfiguration instance private instead of the provided public one.
+        private readonly IConfiguration _config;
 
-        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration config)
+        {
+            _config = config;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -33,7 +34,7 @@ namespace ProjectStone
 
             // Adding a DbContext Service.
             // This uses the connection string that was created in appsettings.json file. (Dependency Injection)
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
             #endregion
 
@@ -73,14 +74,16 @@ namespace ProjectStone
             #endregion
 
             #region Braintree Services for 3rd Party Payments using Dependency Injection
+
             // Configure BrainTree settings based on appsettings.json file. This method works the same as how MailJet was setup, but this way is cleaner.
             //  Everything should be registered ONCE, here, in the container, Startup.cs
-            services.Configure<BrainTreeSettings>(Configuration.GetSection("BrainTree"));
+            services.Configure<BrainTreeSettings>(_config.GetSection("BrainTree"));
             services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
+
             #endregion
 
             #region Repository Services for Dependency Injection
-        
+
             // Register Repository containers here.
             // We will use AddScoped for databases to be used for the scope's lifetime. Meaning it will stay for one request. 
             // If we use it multiple times, it will still use the same object.
@@ -92,7 +95,7 @@ namespace ProjectStone
             services.AddScoped<IOrderHeaderRepository, OrderHeaderRepository>();
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
-            
+
             // This service will be for the DbInitializer with the purpose of Seeding the DB in a new environment for deployment.
             // This will also be added to the pipeline config below.
             services.AddScoped<IDbInitializer, DbInitializer>();
@@ -100,13 +103,14 @@ namespace ProjectStone
             #endregion
 
             #region Facebook Service Authentication
+
             // Register Facebook SSOAuth service to project.
             services.AddAuthentication().AddFacebook(options =>
             {
-                options.AppId = Configuration["FaceBook:AppId"];
-                options.AppSecret = Configuration["FaceBook:AppSecret"];
+                options.AppId = _config["FaceBook:AppId"];
+                options.AppSecret = _config["FaceBook:AppSecret"];
             });
-            
+
             #endregion
 
             services.AddControllersWithViews();
@@ -116,12 +120,12 @@ namespace ProjectStone
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
             #region SyncFusion License Config
-            
+
             // Register Syncfusion License.
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(Configuration["SyncFusion:LicenseKey"]);
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(_config["SyncFusion:LicenseKey"]);
 
             #endregion
-            
+
             if (env.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
             else
             {
@@ -149,7 +153,7 @@ namespace ProjectStone
             app.UseAuthorization();
 
             #region DBInitializer Pipeline Config
-            
+
             // Invoke the initializer located in DataAccess.
             dbInitializer.Initialize();
 
