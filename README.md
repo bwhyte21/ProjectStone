@@ -54,3 +54,5 @@ View and manage Order history (Admin Only):
 * [ ] Add site landing page
 * [ ] ReDesign UI
 * [ ] Minor bug fixes with customer account
+* [ ] Add Stripe payment option
+* [ ] Add Google SSO option
