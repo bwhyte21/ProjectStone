@@ -50,7 +50,7 @@ View and manage Order history (Admin Only):
 
 ---
 
-## ToDo
+## Additions coming soon
 * [ ] Add site landing page
 * [ ] ReDesign UI
 * [ ] Minor bug fixes with customer account
