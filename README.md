@@ -51,6 +51,6 @@ View and manage Order history (Admin Only):
 ---
 
 ## ToDo
-* [ ] Add site Landing Page
+* [ ] Add site landing page
 * [ ] ReDesign UI
 * [ ] Minor bug fixes with customer account
