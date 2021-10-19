@@ -56,3 +56,4 @@ View and manage Order history (Admin Only):
 * [ ] Minor bug fixes with customer account
 * [ ] Add Stripe payment option
 * [ ] Add Google SSO option
+* [ ] Add animations to elements
