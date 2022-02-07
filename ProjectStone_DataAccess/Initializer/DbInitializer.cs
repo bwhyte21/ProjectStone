@@ -34,7 +34,7 @@ namespace ProjectStone_DataAccess.Initializer
                 // Check for any pending DbMigrations. If any, push migrations to database.
                 if (_db.Database.GetPendingMigrations().Any()) { _db.Database.Migrate(); }
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
 
             #region Role Creation
 
