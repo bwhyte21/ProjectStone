@@ -58,7 +58,7 @@ namespace ProjectStone_DataAccess.Initializer
             // Create user and assign all properties we want.
             _userManager.CreateAsync(new ApplicationUser
             {
-                UserName = "admin@gmail.com", // System Admin 
+                UserName = "admin@gmail.com", // System Admin
                 Email = "admin@gmail.com",
                 EmailConfirmed = true,
                 FullName = "Admin Tester",
