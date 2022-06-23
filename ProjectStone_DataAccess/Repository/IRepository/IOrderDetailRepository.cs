@@ -1,9 +1,8 @@
 ﻿using ProjectStone_Models;
 
-namespace ProjectStone_DataAccess.Repository.IRepository
+namespace ProjectStone_DataAccess.Repository.IRepository;
+
+public interface IOrderDetailRepository : IRepository<OrderDetail>
 {
-    public interface IOrderDetailRepository : IRepository<OrderDetail>
-    {
-        void Update(OrderDetail obj);
-    }
+    void Update(OrderDetail obj);
 }

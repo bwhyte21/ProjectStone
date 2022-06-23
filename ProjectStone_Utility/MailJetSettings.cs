@@ -1,8 +1,7 @@
-﻿namespace ProjectStone_Utility
+﻿namespace ProjectStone_Utility;
+
+public class MailJetSettings
 {
-  public class MailJetSettings
-  {
-      public string ApiKey { get; set; }
-      public string ApiSecret { get; set; }
-  }
+    public string ApiKey { get; set; }
+    public string ApiSecret { get; set; }
 }
