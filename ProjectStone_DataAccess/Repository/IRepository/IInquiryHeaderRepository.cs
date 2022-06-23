@@ -1,9 +1,8 @@
 ﻿using ProjectStone_Models;
 
-namespace ProjectStone_DataAccess.Repository.IRepository
+namespace ProjectStone_DataAccess.Repository.IRepository;
+
+public interface IInquiryHeaderRepository : IRepository<InquiryHeader>
 {
-  public interface IInquiryHeaderRepository : IRepository<InquiryHeader>
-    {
-        void Update(InquiryHeader obj);
-    }
+    void Update(InquiryHeader obj);
 }

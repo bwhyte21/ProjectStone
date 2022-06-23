@@ -1,9 +1,8 @@
 ﻿using ProjectStone_Models;
 
-namespace ProjectStone_DataAccess.Repository.IRepository
+namespace ProjectStone_DataAccess.Repository.IRepository;
+
+public interface IOrderHeaderRepository : IRepository<OrderHeader>
 {
-    public interface IOrderHeaderRepository : IRepository<OrderHeader>
-    {
-        void Update(OrderHeader obj);
-    }
+    void Update(OrderHeader obj);
 }
