@@ -52,7 +52,7 @@ namespace ProjectStone.Controllers
             {
                 OrderHeadersList = _orderHeaderRepo.GetAll(),
                 // Using "projections" to populate the select list.
-                OrderStatusList = WebConstants.statusList.ToList().Select(item => new SelectListItem
+                OrderStatusList = WebConstants.StatusList.ToList().Select(item => new SelectListItem
                 {
                     Text = item,
                     Value = item

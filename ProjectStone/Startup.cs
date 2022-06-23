@@ -2,13 +2,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using ProjectStone.Extensions;
 using ProjectStone_DataAccess.Initializer;
 
 namespace ProjectStone
 {
-  public class Startup
+    public class Startup
     {
         // Make the IConfiguration instance private instead of the provided public one.
         private readonly IConfiguration _config;

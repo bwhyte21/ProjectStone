@@ -43,7 +43,7 @@ namespace ProjectStone_Utility
 
         // Create a collection (IEnumerable) of strings to list the Order Statuses to be used in the Order Controller.
         // MUST be a ReadOnly Collection in order to create a list in this class.
-        public static readonly IEnumerable<string> statusList = new ReadOnlyCollection<string>(new List<string>
+        public static readonly IEnumerable<string> StatusList = new ReadOnlyCollection<string>(new List<string>
         {
             StatusApproved,
             StatusCancelled,
